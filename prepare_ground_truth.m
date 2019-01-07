@@ -1,8 +1,9 @@
 %% used to generate pre-segmentation ground truth for BMC revision
 
-tiff_path = 'C:\Users\bcc\Desktop\PartialGroundTruth\RawImages';
+tiff_path = 'C:\Users\bcc\Desktop\BMCevaluation\PartialGroundTruth\RawImages';
+save_tiff_path = 'C:\Users\bcc\Desktop\BMCevaluation\ResizeImage';
 nuc_path = "D:\ProjectCode\DTwatershed\data\aceNuc\CD170704plc1deconp1.csv";
-nii_save_path = 'C:\Users\bcc\Desktop\PartialGroundTruth\RawImages\NiiFile';
+nii_save_path = 'C:\Users\bcc\Desktop\BMCevaluation\PartialGroundTruth\RawImages\NiiFile';
 
 ts = [24,34,44,54,64,74];
 for t = ts
@@ -16,8 +17,12 @@ for t = ts
     raw_memb_resized = imresize3(raw_memb, size(seg_memb));
     
     % overlaid with nucleus image
-    nuc_stack = getNuc(t, size(seg_memb), nuc_path) > 0;
-    raw_memb_resized(nuc_stack) = 255;
+    nuc_stack = getNuc(t, size(seg_memb), nuc_path);
+    memb_path = fullfile(save_tiff_path, strcat('membt', repmat('0', 1, 3-length(t_str)),t_str,'.tif'));
+    nucleus_path = fullfile(save_tiff_path, strcat('nucleust', repmat('0', 1, 3-length(t_str)),t_str,'.tif'));
+    saveastiff(raw_memb_resized, memb_path);
+    saveastiff(uint8(nuc_stack), nucleus_path);
+    raw_memb_resized(nuc_stack>0) = 255;
     
     % uniform label numbers
     seg_memb = uniform_labelnum(seg_memb);
