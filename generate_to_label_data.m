@@ -24,10 +24,11 @@ imInfo = imfinfo(fullfile(embryo_path, img_lists(1).name));
 Width = imInfo.Width;
 Height = imInfo.Height;
 
-to_shape = [ceil(rescale*Height), ceil(rescale*Width), uint8(rescale * slice_num * resolution.z/resolution.xy)]; % shape of the target file
+to_shape = [];
+to_shape = [ceil(rescale*Height), ceil(rescale*Width), ceil(rescale * slice_num * resolution.z/resolution.xy)]; % shape of the target file
 
-label_times = [1:4:37, 40:4:82, 83:4:146];
-for t = [4:144]%label_times
+label_times = [1:4:57, 63:6:135];
+for t = label_times
     display(strcat('Processing T:', num2str(t), '....'));
     
     %% prepare raw membrane stack
@@ -58,7 +59,7 @@ for t = [4:144]%label_times
     %tem = membSeg;
     %uni_membSeg = uint8(rem(membSeg, 255));
     
-    seg_nii = make_nii(membSeg, [1,1,1],[0,0,0], 2);  %512---uint16
+    seg_nii = make_nii(membSeg, [1,1,1],[0,0,0], 4);  %512---uint16
     save_file = fullfile(save_memb_path, strcat('membT', num2str(t), 's.nii'));
     save_nii(seg_nii, save_file)
 end
