@@ -150,11 +150,11 @@ def stack_memb_slices(para):
     for i_slice in range(1, num_slice+1):
         #r"D:\TemDownload\201112plc1_late_Lng\tifR\c elegans 3.lif_Series001_Lng_001_t00_z08_ch01.tif"
         raw_file_name = "{}_L1-t{}-p{}.tif".format(embryo_name, str(tp).zfill(3), str(i_slice).zfill(2))
-
+        # transform the image to array and short them in a list
         img = np.asanyarray(Image.open(os.path.join(raw_folder, raw_file_name)))
         out_stack.insert(0, img)
-    img_stack = np.transpose(np.stack(out_stack), axes=(1, 2, 0))
-    v_min, v_max = np.percentile(img_stack, (0.2, 99.9))
+    img_stack = np.transpose(np.stack(out_stack), axes=(1, 2, 0)) # trasnpose the image from zxy to xyz
+    v_min, v_max = np.percentile(img_stack, (0.2, 99.9)) # erase the outrange grayscale
     img_stack = rescale_intensity(img_stack, in_range=(v_min, v_max), out_range=(0, 255.0))
     img_stack = resize(image=img_stack, output_shape=out_size, preserve_range=True, order=1).astype(np.uint8)
     nib_stack = nib.Nifti1Image(img_stack, np.eye(4))
