@@ -6,14 +6,14 @@
 ./DataRename/__pycache__
 ./DataRename/{tem,venv,dist,Code/Lib}
 
-./DataRename
+DataRename/
 .idea
 **/__pycache__
 ./DataRename
-./gramm
-./MINS-1.3
-./NIfTI_20140122
-./TiffSave
+gramm/
+MINS-1.3/
+NIfTI_20140122/
+TiffSave/
 **.png
 **.m
-./masumhabib-PlotPub-fe51157
+masumhabib-PlotPub-fe51157/
