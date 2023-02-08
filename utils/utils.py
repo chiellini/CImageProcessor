@@ -12,7 +12,7 @@ from skimage.transform import resize
 from tqdm import tqdm
 from glob import glob
 
-
+# generate 768 tiff figure drawing put palette
 P = [252, 233, 79, 114, 159, 207, 239, 41, 41, 173, 127, 168, 138, 226, 52,
      233, 185, 110, 252, 175, 62, 211, 215, 207, 196, 160, 0, 32, 74, 135, 164, 0, 0,
      92, 53, 102, 78, 154, 6, 143, 89, 2, 206, 92, 0, 136, 138, 133, 237, 212, 0, 52,
@@ -45,15 +45,51 @@ def save_indexed_png(fname, label_map, palette=P):
     im.putpalette(palette)
     im.save(fname, 'PNG')
 
-def save_indexed_tif(fname, label_map, palette=P):
-    raw_map = label_map.copy()
-    if label_map.max() > 255:
-        label_map = np.remainder(label_map, 255)
-    label_map = np.squeeze(label_map.astype(np.uint8))
-    label_map[np.logical_and(raw_map, ~label_map)] = 255
-    im = Image.fromarray(label_map, 'P')
-    im.putpalette(palette)
-    im.save(fname)
+def save_indexed_tif(file_name, data,segmented=True):
+    """Save matrix data as indexed images which can be rendered by ImageJ"""
+
+    check_folder(file_name)
+    if segmented:
+        tif_imgs = []
+        num_slices = data.shape[-1]
+        for i_slice in range(num_slices):
+            label_map = data[..., i_slice]
+            label_map = np.squeeze(label_map.astype(np.uint8))
+            tif_img = Image.fromarray(label_map, mode="P")
+            tif_img.putpalette(P)
+            tif_imgs.append(tif_img)
+        if os.path.isfile(file_name):
+            os.remove(file_name)
+
+        # save the 1th slice image, treat others slices as appending
+        tif_imgs[0].save(file_name, save_all=True, append_images=tif_imgs[1:])
+    else:
+        tif_imgs = []
+        num_slices = data.shape[-1]
+        for i_slice in range(num_slices):
+            label_map=data[..., i_slice]
+            # raw_map=label_map.copy()
+            # if label_map.max() > 255:
+            #     label_map = np.remainder(label_map, 255)
+            label_map = np.squeeze(label_map.astype(np.uint8))
+            # label_map[np.logical_and(raw_map, ~label_map)] = 255
+            tif_img = Image.fromarray(label_map, mode="P")
+            # tif_img.putpalette(P)
+            tif_imgs.append(tif_img)
+        if os.path.isfile(file_name):
+            os.remove(file_name)
+
+        # save the 1th slice image, treat others slices as appending
+        tif_imgs[0].save(file_name, save_all=True, append_images=tif_imgs[1:])
+
+def scale2index(seg0):
+    """Rescale all labels into range [0, 255]"""
+    seg = seg0 % 255
+    reduce_mask = np.logical_and(seg0!=0, seg==0)
+    seg[reduce_mask] = 255  # Because only 255 colors are available, all cells should be numbered within [0, 255].
+    seg = seg.astype(np.uint8)
+
+    return seg
 
 def isotropic_resolution(src_folder, dst_folder=None, target_res=None):
     src_files = glob(os.path.join(src_folder, "*.nii.gz"))
