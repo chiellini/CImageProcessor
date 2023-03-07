@@ -8,13 +8,7 @@ import pickle
 import pandas as pd
 from treelib import Tree, Node
 
-def read_new_cd(cd_file):
-    df_nuc = pd.read_csv(cd_file, lineterminator="\n")
-    df_nuc[["cell", "time"]] = df_nuc["Cell & Time"].str.split(":", expand=True)
-    df_nuc = df_nuc.rename(columns={"X (Pixel)":"x", "Y (Pixel)":"y", "Z (Pixel)\r":"z"})
-    df_nuc = df_nuc.astype({"x":float, "y":float, "z":float, "time":int})
-
-    return df_nuc
+from utils.data_structure import read_cd_file
 
 def add_number_dict(nucleus_file, max_time):
     '''
@@ -44,33 +38,45 @@ def add_number_dict(nucleus_file, max_time):
     cell_tree.create_node('MS', 'MS', parent='EMS')
 
     # Read the name excel and construct the tree with complete segCell
-    df_time = read_new_cd(nuc_file)
+    df_time = read_cd_file(nuc_file)
 
     # read and combine all names from different acetrees
     ## Get cell number
     try:
-        pd_number = pd.read_csv('./number_dictionary.csv', names=["name", "label"])
-        number_dictionary = pd.Series(pd_number.label.values, index=pd_number.name).to_dict()
+        label_name_dict = pd.read_csv(r'necessary_files/name_dictionary_cmap.csv', index_col=0).to_dict()['0']
+        name_label_dict = {value: key for key, value in label_name_dict.items()}
+
     except:
-        number_dictionary = {}
+        name_label_dict = {}
 
     # =====================================
     # dynamic update the name dictionary
     # =====================================
-    cell_in_dictionary = list(number_dictionary.keys())
+    cell_in_dictionary = list(name_label_dict.keys())
 
-    ace_pd = read_new_cd(os.path.join(nucleus_file))
+    ace_pd = read_cd_file(os.path.join(nucleus_file))
 
     ace_pd = ace_pd[ace_pd.time <= max_time]
     cell_list = list(ace_pd.cell.unique())
+    print(len(cell_in_dictionary) , len(cell_list))
     add_cell_list = list(set(cell_list) - set(cell_in_dictionary))
     add_cell_list.sort()
+    print(add_cell_list)
+
     if len(add_cell_list) > 0:
         print("Name dictionary updated !!!")
         add_number_dictionary = dict(zip(add_cell_list, range(len(cell_in_dictionary) + 1, len(cell_in_dictionary) + len(add_cell_list) + 1)))
-        number_dictionary.update(add_number_dictionary)
-        pd_number_dictionary = pd.DataFrame.from_dict(number_dictionary, orient="index")
-        pd_number_dictionary.to_csv('./number_dictionary.csv', header=False)
+        # --------save name_label_dict csv-------------
+        name_label_dict.update(add_number_dictionary)
+        pd_number_dictionary = pd.DataFrame.from_dict(name_label_dict, orient="index")
+        print(pd_number_dictionary)
+        pd_number_dictionary.to_csv('./necessary_files/number_dictionary.csv')
+
+        # -----------save label_name_dict csv
+        label_name_dict_saving={value: key for key, value in name_label_dict.items()}
+        pd_name_dictionary = pd.DataFrame.from_dict(label_name_dict_saving, orient="index")
+        print(pd_name_dictionary)
+        pd_name_dictionary.to_csv('./necessary_files/name_dictionary.csv')
 
 
 class cell_node(object):
@@ -97,7 +103,7 @@ class cell_node(object):
 
 if __name__ == "__main__":
 
-    CD_folder = r"D:\TemDownload\CD File_PLUS"
+    CD_folder = r"./necessary_files/CD_files"
     nuc_files = sorted(glob.glob(os.path.join(CD_folder, "*.csv")))
 
     for idx, nuc_file in enumerate(nuc_files):

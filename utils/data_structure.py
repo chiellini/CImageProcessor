@@ -7,6 +7,25 @@ import glob
 import pickle
 import pandas as pd
 from treelib import Tree, Node
+import io
+
+def read_old_cd(cd_file_path):
+    df_nuc=pd.DataFrame(columns=['cell','time','x','y','z'])
+    with io.open(cd_file_path, mode="r", encoding="utf-8") as f:
+        # next(f)
+        next(f)
+        for line in f:
+            info_list = line.split()
+            # print(info_list)
+            df_nuc.loc[len(df_nuc)]=[info_list[0],info_list[1],info_list[4],info_list[3],info_list[2]]
+    df_nuc = df_nuc.astype({"x":float, "y":float, "z":float, "time":int})
+    return df_nuc
+
+def read_cd_file(cd_file_path):
+    df_nuc_tmp = pd.read_csv(cd_file_path)
+    df_nuc=df_nuc_tmp[['cell','time','x','y','z']]
+    df_nuc = df_nuc.astype({"x": float, "y": float, "z": float, "time": int})
+    return df_nuc
 
 def read_new_cd(cd_file):
     df_nuc = pd.read_csv(cd_file, lineterminator="\n")

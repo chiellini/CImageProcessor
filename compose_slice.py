@@ -16,7 +16,7 @@ import multiprocessing as mp
 from skimage.transform import resize
 
 from utils.utils import check_folder
-from utils.data_structure import read_new_cd
+from utils.data_structure import read_cd_file
 
 
 def combine_slices(config):
@@ -37,8 +37,7 @@ def combine_slices(config):
     save_nuc = config["save_nuc"]
     save_memb = config["save_memb"]
     is_cd_file=config["lineage_file"]
-    if is_cd_file:
-        number_dictionary = config["number_dictionary"]
+
 
     # get output size
     raw_memb_files = glob.glob(os.path.join(raw_folder, embryo_names[0], "tifR", "*.tif"))
@@ -54,9 +53,9 @@ def combine_slices(config):
 
         # get lineage file
         if is_cd_file:
-            lineage_file = os.path.join(config["raw_folder"], embryo_name, "aceNuc", "CD{}.csv".format(embryo_name))
+            lineage_file_path = os.path.join(config["raw_folder"], embryo_name, "aceNuc", "CD{}.csv".format(embryo_name))
         else:
-            lineage_file = None
+            lineage_file_path = None
 
         # ======================= || save nucleus
         if save_nuc:
@@ -90,18 +89,20 @@ def combine_slices(config):
                 pass
 
         # save nucleus
-        if lineage_file:
+        if is_cd_file:
+            assert lineage_file_path is not None
             target_folder = os.path.join(stack_folder, embryo_name, "SegNuc")
             if not os.path.isdir(target_folder):
                 os.makedirs(target_folder)
-            pd_lineage = read_new_cd(lineage_file)
+            pd_lineage = read_cd_file(lineage_file_path)
 
-            pd_number = pd.read_csv(number_dictionary, names=["name", "label"])
-            number_dict = pd.Series(pd_number.label.values, index=pd_number.name).to_dict()
+            number_dictionary_path = config["name_dictionary"]
+            label_name_dict = pd.read_csv(number_dictionary_path, index_col=0).to_dict()['0']
+            name_label_dict = {value: key for key, value in label_name_dict.items()}
 
             configs = []
-            for tp in range(1, max_times[idx] + 1):
-                configs.append((embryo_name, number_dict, pd_lineage, tp, raw_size, out_size, out_res,
+            for tp in range(1, max_times[idx_embryo] + 1):
+                configs.append((embryo_name, name_label_dict, pd_lineage, tp, raw_size, out_size, out_res,
                                 xy_res / z_res, target_folder))
                 # save_nuc_seg(configs[0])
             for idx, _ in enumerate(tqdm(mpPool.imap_unordered(save_nuc_seg, configs), total=len(configs),
@@ -118,7 +119,7 @@ def combine_slices(config):
             #                  out_res=out_res,
             #                  dif_res=xy_res/z_res,
             #                  save_folder=target_folder)
-            shutil.copy(lineage_file, os.path.join(stack_folder, embryo_name))
+            shutil.copy(lineage_file_path, os.path.join(stack_folder, embryo_name))
 
 # ============================================
 # save raw nucleus stack
@@ -200,18 +201,18 @@ def save_nuc_seg(para):
 if __name__ == "__main__":
 
     config = dict(num_slice=94,
-                  embryo_names=["220501plc1p4","220508plc1p5","220526plc1p1","220810plc1p1","220818plc1p2","221017plc1p2"],
-                  max_times = [240,240,240,210,240,240],
+                  embryo_names=['221017plc1p2'],
+                  max_times = [240],
                   xy_resolution = 0.09,
                   z_resolution = 0.43,
                   # 94  *   0.43/0.09  *  356/712
-                  out_size = [256, 356, 224], # todo: need to be calculated with the vertical image amount
-                  raw_folder=r"F:\ProjectData\MembraneProject\AllRawData",
-                  target_folder=r"D:\ProjectData\AllDataPacked",
-                  save_nuc = True,
-                  save_memb = True,
-                  lineage_file = False,
-                  # number_dictionary = r"D:\OneDriveBackup\OneDrive - City University of Hong Kong\paper\7_AtlasCell\Dataset\number_dictionary.csv"
+                  out_size = [512, 712, 448], # todo: need to be calculated with the vertical image amount
+                  raw_folder=r"E:\ProjectData\MembraneProject\AllRawData",
+                  target_folder=r"C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\DataSource",
+                  save_nuc = False,
+                  save_memb = False,
+                  lineage_file = True,
+                  name_dictionary = r"./necessary_files/name_dictionary.csv"
                   )
 
     combine_slices(config)
