@@ -124,10 +124,10 @@ def nib_save(file_name, data, overwrite=False):
     img = nib.Nifti1Image(data, np.eye(4))
     nib.save(img, file_name)
 
-def nib_load(file_name):
-    assert os.path.isfile(file_name), "File {} not exist".format(file_name)
-
-    return nib.load(file_name).get_fdata()
+# def nib_load(file_name):
+#     assert os.path.isfile(file_name), "File {} not exist".format(file_name)
+#
+#     return nib.load(file_name).get_fdata()
 
 def get_boundary(seg, b_width=1):
     """
