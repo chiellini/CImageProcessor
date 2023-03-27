@@ -1,16 +1,15 @@
-import os
-import shutil
+
 import numpy as np
 import nibabel as nib
 
 import os
 import shutil
 from PIL import Image
-import numpy as np
 import math
 from skimage.transform import resize
 from tqdm import tqdm
 from glob import glob
+import pandas as pd
 
 # generate 768 tiff figure drawing put palette
 P = [252, 233, 79, 114, 159, 207, 239, 41, 41, 173, 127, 168, 138, 226, 52,
@@ -45,24 +44,66 @@ def save_indexed_png(fname, label_map, palette=P):
     im.putpalette(palette)
     im.save(fname, 'PNG')
 
-def save_indexed_tif(file_name, data,segmented=True):
+def save_indexed_tif(file_name, data,segmented=True,obj_selection_index_list=[]):
     """Save matrix data as indexed images which can be rendered by ImageJ"""
-
+    # label_
     check_folder(file_name)
+    # name,tp=os.path.basename(file_name).split('.')[0].split('_')[:2]
     if segmented:
-        tif_imgs = []
-        num_slices = data.shape[-1]
-        for i_slice in range(num_slices):
-            label_map = data[..., i_slice]
-            label_map = np.squeeze(label_map.astype(np.uint8))
-            tif_img = Image.fromarray(label_map, mode="P")
-            tif_img.putpalette(P)
-            tif_imgs.append(tif_img)
-        if os.path.isfile(file_name):
-            os.remove(file_name)
+        number_dictionary_path = r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\GUIData\WebData_CMap_cell_label_v3\name_dictionary.csv'
+        label_name_dict = pd.read_csv(number_dictionary_path, index_col=0).to_dict()['0']
 
-        # save the 1th slice image, treat others slices as appending
-        tif_imgs[0].save(file_name, save_all=True, append_images=tif_imgs[1:])
+        mapping_dict={}
+        for cell_label in list(np.unique(data))[1:]:
+            mapping_dict[cell_label]=[int((cell_label+1)/256)+1,(cell_label+1)%256]
+        embryo_name=os.path.basename(file_name).split('.')[0].split('_')[0]
+        tp=os.path.basename(file_name).split('.')[0].split('_')[1]
+        map_txt_saving_path=os.path.join(os.path.dirname(os.path.dirname(file_name)),'tiffmaptxt',embryo_name,embryo_name+'_'+tp+'_map.txt')
+        print(map_txt_saving_path)
+        check_folder(map_txt_saving_path)
+        with open(map_txt_saving_path, 'w') as file:
+            for key, value in mapping_dict.items():
+                file.write(f'{label_name_dict[key]}\n')
+                file.write(f'{int(key)}:{int(value[0])}:{int(value[1])}\n')
+
+        num_slices = data.shape[-1]
+        seperate_mask_tmp=((data+1)/256).astype(np.uint8)+1
+        seperate_mask_tmp[data==0]=0
+        # seperate_mask_list={}
+        for seperate_idx in list(np.unique(seperate_mask_tmp)[1:]):
+            seperate_mask_this=(seperate_mask_tmp!=seperate_idx)
+            # print(seperate_idx,np.unique(seperate_mask_this,return_counts=True),len(np.unique(seperate_mask_this)))
+            data_this=data.copy()
+            data_this[seperate_mask_this]=0
+            obj_selection_index_list.append(str(list(np.unique((data_this+1).astype(np.uint8)))[-1]))
+
+            tif_imgs = []
+            for i_slice in range(num_slices):
+                label_map = data_this[..., i_slice] # avoid 256 become 0
+                # print('seg data',np.unique(label_map)) # build match map
+                # print('seg data',np.unique(label_map)%256+1) # build match map
+
+                label_map_out = np.squeeze((label_map+1).astype(np.uint8))
+                # print('seg data',np.unique(label_map_out)) # build match map
+
+                label_map_out[label_map==0]=0
+
+                tif_img = Image.fromarray(label_map_out, mode="P")
+                tif_img.putpalette(P)
+                # print('image data',np.unique(np.asarray(tif_img))[0:])
+                # tif_img = tif_img.convert("P", palette=P, colors=256)
+
+                # tif_img=tif_img.convert("RGB")
+                # print('seg data',np.unique(label_map,return_counts=True))
+                #
+                # print('image data',np.unique(np.asarray(tif_img))[0:])
+                tif_imgs.append(tif_img)
+            tif_saving=file_name.split('.')[0]+'_{}.tif'.format(str(seperate_idx))
+            if os.path.isfile(tif_saving):
+                os.remove(tif_saving)
+
+            # save the 1th slice image, treat others slices as appending
+            tif_imgs[0].save(tif_saving, save_all=True, append_images=tif_imgs[1:])
     else:
         tif_imgs = []
         num_slices = data.shape[-1]
