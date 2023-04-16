@@ -22,7 +22,7 @@ def tiff2nifti(root, target):
         nib_save(os.path.join(target, save_name + '_segCell.nii.gz'), np.transpose(tiff_file_arr, axes=(1, 2, 0)))
 
 
-def nifti2tiff(root, target, segmented):
+def nifti2tiff_seperated(root, target, segmented):
     nifti_file_paths = glob.glob(os.path.join(root, '*.nii.gz'))
     obj_selection_index_list = []
     saving_obj_selection_index_list = os.path.join(os.path.dirname(target), "{}_render_indexed.txt".format(
@@ -56,6 +56,25 @@ def nifti2tiff(root, target, segmented):
             # Write each string to a new line in the file
             for string in obj_selection_index_list:
                 f.write(string + "\n")
+
+def nifti2tiff(root, target, segmented):
+    nifti_file_paths = glob.glob(os.path.join(root, '*.nii.gz'))
+    obj_selection_index_list = []
+    saving_obj_selection_index_list = os.path.join(os.path.dirname(target), "{}_render_indexed.txt".format(
+        os.path.basename(target).split('.')[0]))
+    print(saving_obj_selection_index_list)
+    for nifti_file_path in nifti_file_paths:
+        nifti_file_arr = nibabel.load(nifti_file_path).get_fdata()
+        # print(np.unique(nifti_file_arr,return_counts=True))
+        # target_shape = [int(x / 2) for x in nifti_file_arr.shape]
+        # nifti_file_arr = resize(image=nifti_file_arr, output_shape=target_shape, preserve_range=True, order=0).astype(np.uint8)
+
+        if segmented is False and np.max(nifti_file_arr) < 255:
+            nifti_file_arr = (nifti_file_arr * 255 / np.max(nifti_file_arr)).astype(np.uint)
+        save_file_path = os.path.join(target, os.path.basename(nifti_file_path).split(".")[0] + ".tif")
+        save_indexed_tif(save_file_path, nifti_file_arr, segmented=segmented,
+                         obj_selection_index_list=obj_selection_index_list,is_seperate=False)
+
 
 
 def nift2npy(root, target):
@@ -118,6 +137,22 @@ if __name__ == "__main__":
     # nifti2tiff(root=r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\CMapEvaluationData\Ground\Groundniigz',
     #            target=r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\CMapEvaluationData\Ground\GroundTif',
     #            segmented=True)
+    # -----------------comparison method nii.gz to tiff--------------------
+    # nifti2tiff(root=r'F:\CMap_paper\CMapEvaluation\3DCellSeg\niigz',
+    #            target=r'F:\CMap_paper\CMapEvaluation\3DCellSeg\tiff',
+    #            segmented=True)
+    # nifti2tiff(root=r'F:\CMap_paper\CMapEvaluation\Cellpose3d\niigz',
+    #            target=r'F:\CMap_paper\CMapEvaluation\Cellpose3d\tiff',
+    #            segmented=True)
+    # nifti2tiff(root=r'F:\CMap_paper\CMapEvaluation\VNet-CShaper\niigz',
+    #            target=r'F:\CMap_paper\CMapEvaluation\VNet-CShaper\tiff',
+    #            segmented=True)
+    # nifti2tiff(root=r'F:\CMap_paper\CMapEvaluation\CShaper\niigz',
+    #            target=r'F:\CMap_paper\CMapEvaluation\CShaper\tiff',
+    #            segmented=True)
+    # nifti2tiff(root=r'F:\CMap_paper\CMapEvaluation\Stardist3d\niigz',
+    #            target=r'F:\CMap_paper\CMapEvaluation\Stardist3d\tiff',
+    #            segmented=True)
     # --------------raw niigz to tiff -----------------------------
     # nifti2tiff(
     #     root=r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\CMapEvaluationData\Rawniigz',
@@ -133,7 +168,7 @@ if __name__ == "__main__":
     for embryo_name in embryo_names:
         seg_cell_root = os.path.join(root, embryo_name, 'SegCell')
         tiff_root = os.path.join(target, embryo_name)
-        nifti2tiff(seg_cell_root, tiff_root, segmented=True)
+        nifti2tiff_seperated(seg_cell_root, tiff_root, segmented=True)
 
     # tiff2nifti(r'F:\test',r'F:\test')
     # nifti2tiff(r'C:\Users\zelinli6\Downloads\stardist_3d_data\testnifti\images',r'C:\Users\zelinli6\Downloads\stardist_3d_data\test\images',segmented=False)

@@ -80,6 +80,9 @@ def rename_objs(embryo_names, tps, max_middle_num, root, tiff_map_txt_path):
 def combine_objs(embryo_names, tps, max_middle_num, root, target_root):
     for idx, embryo_name in enumerate(embryo_names):
         for tp in range(1, tps[idx] + 1):
+            obj_file_path_tmp = os.path.join(root, embryo_name,
+                                         embryo_name + '_' + str(tp).zfill(3) + '_segCell_1.obj')
+
             output_obj_path = os.path.join(target_root, embryo_name,
                                            embryo_name + '_' + str(tp).zfill(3) + '_segCell.obj')
             output_mtl_path = os.path.join(target_root, embryo_name,
@@ -88,6 +91,7 @@ def combine_objs(embryo_names, tps, max_middle_num, root, target_root):
 
             vertex_offset = 0
             vertex_offset_calculation = 0
+
             print('combining ',embryo_name,tp)
             with open(output_obj_path, 'w') as outfile:
                 outfile.write('# OBJ File\n')

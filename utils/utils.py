@@ -44,19 +44,38 @@ def save_indexed_png(fname, label_map, palette=P):
     im.putpalette(palette)
     im.save(fname, 'PNG')
 
-def save_indexed_tif(file_name, data,segmented=True,obj_selection_index_list=[]):
+def save_indexed_tif(file_name, data,segmented=True,obj_selection_index_list=[],is_seperate=True):
     """Save matrix data as indexed images which can be rendered by ImageJ"""
     # label_
     check_folder(file_name)
     # name,tp=os.path.basename(file_name).split('.')[0].split('_')[:2]
     if segmented:
+        embryo_name=os.path.basename(file_name).split('.')[0].split('_')[0]
+        num_slices = data.shape[-1]
+
+
+        if not is_seperate:
+            tif_imgs = []
+            for i_slice in range(num_slices):
+                label_map = data[..., i_slice]  # avoid 256 become 0
+                label_map_out = np.squeeze((label_map + 1).astype(np.uint8))
+                label_map_out[label_map == 0] = 0
+                tif_img = Image.fromarray(label_map_out, mode="P")
+                tif_img.putpalette(P)
+                tif_imgs.append(tif_img)
+            tif_saving=file_name.split('.')[0]+'.tif'
+            if os.path.isfile(tif_saving):
+                os.remove(tif_saving)
+            # save the 1th slice image, treat others slices as appending
+            tif_imgs[0].save(tif_saving, save_all=True, append_images=tif_imgs[1:])
+            return
+
         number_dictionary_path = r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\GUIData\WebData_CMap_cell_label_v3\name_dictionary.csv'
         label_name_dict = pd.read_csv(number_dictionary_path, index_col=0).to_dict()['0']
 
         mapping_dict={}
         for cell_label in list(np.unique(data))[1:]:
             mapping_dict[cell_label]=[int((cell_label+1)/256)+1,(cell_label+1)%256]
-        embryo_name=os.path.basename(file_name).split('.')[0].split('_')[0]
         tp=os.path.basename(file_name).split('.')[0].split('_')[1]
         map_txt_saving_path=os.path.join(os.path.dirname(os.path.dirname(file_name)),'tiffmaptxt',embryo_name,embryo_name+'_'+tp+'_map.txt')
         print(map_txt_saving_path)
@@ -64,9 +83,9 @@ def save_indexed_tif(file_name, data,segmented=True,obj_selection_index_list=[])
         with open(map_txt_saving_path, 'w') as file:
             for key, value in mapping_dict.items():
                 file.write(f'{label_name_dict[key]}\n')
-                file.write(f'{int(key)}:{int(value[0])}:{int(value[1])}\n')
+                value_this_map=1 if int(value[1]) == 0 else int(value[1])
+                file.write(f'{int(key)}:{int(value[0])}:{value_this_map}\n')
 
-        num_slices = data.shape[-1]
         seperate_mask_tmp=((data+1)/256).astype(np.uint8)+1
         seperate_mask_tmp[data==0]=0
         # seperate_mask_list={}
@@ -87,6 +106,14 @@ def save_indexed_tif(file_name, data,segmented=True,obj_selection_index_list=[])
                 # print('seg data',np.unique(label_map_out)) # build match map
 
                 label_map_out[label_map==0]=0
+                label_map_out[label_map==255]=1
+                label_map_out[label_map==511]=1
+                label_map_out[label_map==767]=1
+                label_map_out[label_map==1023]=1
+                label_map_out[label_map==1279]=1
+                label_map_out[label_map==1535]=1
+
+
 
                 tif_img = Image.fromarray(label_map_out, mode="P")
                 tif_img.putpalette(P)
