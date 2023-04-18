@@ -5,7 +5,7 @@ import os
 import numpy as np
 
 from scipy.ndimage.morphology import binary_closing
-from skimage.transform import resize
+from skimage.transform import resize, rescale
 
 # ------user's packages------
 from utils.utils import save_indexed_tif, scale2index, nib_save
@@ -44,14 +44,17 @@ def nifti2tiff_seperated(root, target, segmented):
         # embryo_name = os.path.basename(nifti_file_path).split(".")[0].split('_')[0]
         # tp = os.path.basename(nifti_file_path).split(".")[0].split('_')[1]
         save_file_path = os.path.join(target, os.path.basename(nifti_file_path).split(".")[0] + ".tif")
-        save_indexed_tif(save_file_path, nifti_file_arr, segmented=segmented,
+        target_shape_scale=0.5
+        resize_seg_array = rescale(nifti_file_arr, scale=target_shape_scale, preserve_range=True, mode='constant', order=0,anti_aliasing=False)
+        save_indexed_tif(save_file_path, resize_seg_array, segmented=segmented,
                          obj_selection_index_list=obj_selection_index_list)
         # Open the file for writing
     saving_obj_selection_index_list = os.path.join(os.path.dirname(target), "{}_render_indexed.txt".format(
         os.path.basename(target).split('.')[0]))
 
     if segmented:
-        print(saving_obj_selection_index_list, len(obj_selection_index_list))
+        # print(saving_obj_selection_index_list, len(obj_selection_index_list))
+        assert len([name for name in os.listdir(target)]) == len(obj_selection_index_list)
         with open(saving_obj_selection_index_list, "w") as f:
             # Write each string to a new line in the file
             for string in obj_selection_index_list:
@@ -164,7 +167,7 @@ if __name__ == "__main__":
                     '200326plc1p3', '200326plc1p4', '200122plc1lag1ip1', '200122plc1lag1ip2', '200117plc1pop1ip2',
                     '200117plc1pop1ip3']
     root = r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\GUIData\WebData_CMap_cell_label_v3'
-    target = r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\GUIData\tem\tiff'
+    target = r'F:\obj_web_visulizaiton\tiff'
     for embryo_name in embryo_names:
         seg_cell_root = os.path.join(root, embryo_name, 'SegCell')
         tiff_root = os.path.join(target, embryo_name)

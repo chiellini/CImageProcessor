@@ -80,11 +80,37 @@ def save_indexed_tif(file_name, data,segmented=True,obj_selection_index_list=[],
         map_txt_saving_path=os.path.join(os.path.dirname(os.path.dirname(file_name)),'tiffmaptxt',embryo_name,embryo_name+'_'+tp+'_map.txt')
         print(map_txt_saving_path)
         check_folder(map_txt_saving_path)
+        tmp_label_0_cell_list=[]
         with open(map_txt_saving_path, 'w') as file:
             for key, value in mapping_dict.items():
                 file.write(f'{label_name_dict[key]}\n')
-                value_this_map=1 if int(value[1]) == 0 else int(value[1])
-                file.write(f'{int(key)}:{int(value[0])}:{value_this_map}\n')
+                if int(value[1]) == 0:
+                    file.write(f'{int(key)}:{0}:{int(value[0])}\n')
+                    tmp_label_0_cell_list.append([key,int(value[0])])
+                else:
+                    file.write(f'{int(key)}:{int(value[0])}:{int(value[1])}\n')
+
+        # 0--------mask
+        if len(tmp_label_0_cell_list)>0:
+            data_this = np.zeros(data.shape)
+
+            for cell_label,tmp_label in tmp_label_0_cell_list:
+                data_this[data==cell_label]=tmp_label
+            # no plus 1 because base on itself
+            obj_selection_index_list.append(str(list(np.unique(data_this.astype(np.uint8)))[-1]))
+
+            tif_imgs = []
+            for i_slice in range(num_slices):
+                label_map = data_this[..., i_slice]  # avoid 256 become 0
+                label_map_out = np.squeeze((label_map).astype(np.uint8))
+                tif_img = Image.fromarray(label_map_out, mode="P")
+                tif_img.putpalette(P)
+                tif_imgs.append(tif_img)
+            tif_saving = file_name.split('.')[0] + '_{}.tif'.format(str(0))
+            if os.path.isfile(tif_saving):
+                os.remove(tif_saving)
+            # save the 1th slice image, treat others slices as appending
+            tif_imgs[0].save(tif_saving, save_all=True, append_images=tif_imgs[1:])
 
         seperate_mask_tmp=((data+1)/256).astype(np.uint8)+1
         seperate_mask_tmp[data==0]=0
@@ -94,6 +120,7 @@ def save_indexed_tif(file_name, data,segmented=True,obj_selection_index_list=[],
             # print(seperate_idx,np.unique(seperate_mask_this,return_counts=True),len(np.unique(seperate_mask_this)))
             data_this=data.copy()
             data_this[seperate_mask_this]=0
+            # plus 1 beacuae it is based on data
             obj_selection_index_list.append(str(list(np.unique((data_this+1).astype(np.uint8)))[-1]))
 
             tif_imgs = []
@@ -106,14 +133,6 @@ def save_indexed_tif(file_name, data,segmented=True,obj_selection_index_list=[],
                 # print('seg data',np.unique(label_map_out)) # build match map
 
                 label_map_out[label_map==0]=0
-                label_map_out[label_map==255]=1
-                label_map_out[label_map==511]=1
-                label_map_out[label_map==767]=1
-                label_map_out[label_map==1023]=1
-                label_map_out[label_map==1279]=1
-                label_map_out[label_map==1535]=1
-
-
 
                 tif_img = Image.fromarray(label_map_out, mode="P")
                 tif_img.putpalette(P)
