@@ -78,11 +78,13 @@ def set_up_new_training_and_evaluation_data():
 
 if __name__ == "__main__":
     # resize_the_segcell_niigz()
-    embryo_names = ['191108plc1p1','200109plc1p1']
+    embryo_names = ['200109plc1p1']
+    tps = [205]
+
     # '191108plc1p1'，'200109plc1p1', '200113plc1p2', '200113plc1p3', '200322plc1p2', '200323plc1p1',
     # '200326plc1p3', '200326plc1p4', '200122plc1lag1ip1', '200122plc1lag1ip2', '200117plc1pop1ip2',
     # '200117plc1pop1ip3']
-    tps = [205, 205, 255, 195, 195, 185, 220, 195, 195, 195, 140, 155]
+    # tps = [205, 205, 255, 195, 195, 185, 220, 195, 195, 195, 140, 155]
     max_middle_num = 5
     root = r'F:\obj_web_visulizaiton\obj_seperated'
     tiff_map_txt_path = r'F:\obj_web_visulizaiton\tiff\tiffmaptxt'

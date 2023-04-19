@@ -8,7 +8,7 @@ def read_map_file_as_dict(txt_file, max_middle_num):
         lines = f.readlines()
     map_list = [line.strip() for line in lines]
     map_this = {}
-    for i in range(1, max_middle_num + 1):
+    for i in range(0, max_middle_num + 1):
         map_this[i] = {}
     for i in range(0, len(map_list), 2):
         cell_label, middle_num, middle_label = map_list[i + 1].split(':')
@@ -21,10 +21,11 @@ def rename_objs(embryo_names, tps, max_middle_num, root, tiff_map_txt_path):
         for tp in range(1, tps[idx] + 1):
             map_path = os.path.join(tiff_map_txt_path, embryo_name, embryo_name + '_' + str(tp).zfill(3) + '_map.txt')
             map_dict = read_map_file_as_dict(map_path, max_middle_num)
-            for middle_idx in range(1, max_middle_num + 1):
+            for middle_idx in range(0, max_middle_num + 1):
                 indexes_for_mtl = 0
                 indecis_dict_for_ori_mtl_name = {}
                 rename_order_list_for_mtl = []
+                # =============rename  obj ===================
                 obj_file_path = os.path.join(root, embryo_name,
                                              embryo_name + '_' + str(tp).zfill(3) + '_segCell_' + str(
                                                  middle_idx) + '.obj')
@@ -50,11 +51,12 @@ def rename_objs(embryo_names, tps, max_middle_num, root, tiff_map_txt_path):
                                 indexes_for_mtl += 1
                             elif line.startswith('usemtl '):
                                 f.write('usemtl ' + rename_order_list_for_mtl[indexes_for_mtl - 1] + '\n')
-                                print('mapping ',line.split(' ')[1].split('\n')[0],'->>',rename_order_list_for_mtl[indexes_for_mtl - 1])
+                                # print('mapping ',line.split(' ')[1].split('\n')[0],'->>',rename_order_list_for_mtl[indexes_for_mtl - 1])
                                 indecis_dict_for_ori_mtl_name[line.split(' ')[1].split('\n')[0]] = \
                                 rename_order_list_for_mtl[indexes_for_mtl - 1]
                             else:
                                 f.write(line)
+                # =============rename  mtl ===================
                 mtl_file_path = os.path.join(root, embryo_name,
                                              embryo_name + '_' + str(tp).zfill(3) + '_segCell_' + str(
                                                  middle_idx) + '.mtl')
@@ -69,7 +71,7 @@ def rename_objs(embryo_names, tps, max_middle_num, root, tiff_map_txt_path):
                         for line in lines:
                             if line.startswith('newmtl '):
                                 original_name = line.split(' ')[1].split('\n')[0]
-                                print(original_name,'  ____...-->>',indecis_dict_for_ori_mtl_name[original_name])
+                                # print(original_name,'  ____...-->>',indecis_dict_for_ori_mtl_name[original_name])
                                 # print(mtl_index_tmp, rename_order_list_for_mtl[mtl_index_tmp])
                                 f.write('newmtl ' + indecis_dict_for_ori_mtl_name[original_name] + '\n')
                                 mtl_index_tmp += 1
@@ -96,7 +98,7 @@ def combine_objs(embryo_names, tps, max_middle_num, root, target_root):
             with open(output_obj_path, 'w') as outfile:
                 outfile.write('# OBJ File\n')
                 outfile.write('mtllib {}_{}_segCell.mtl\n'.format(embryo_name, str(tp).zfill(3)))
-                for middle_idx in range(1, max_middle_num + 1):
+                for middle_idx in range(0, max_middle_num + 1):
                     obj_file_path = os.path.join(root, embryo_name,
                                                  embryo_name + '_' + str(tp).zfill(3) + '_segCell_' + str(
                                                      middle_idx) + '.obj')
@@ -119,7 +121,7 @@ def combine_objs(embryo_names, tps, max_middle_num, root, target_root):
             with open(output_mtl_path, 'w') as outfile:
                 outfile.write('# MTL File\n')
                 outfile.write('\n')
-                for middle_idx in range(1, max_middle_num + 1):
+                for middle_idx in range(0, max_middle_num + 1):
                     mtl_file_path = os.path.join(root, embryo_name,
                                                  embryo_name + '_' + str(tp).zfill(3) + '_segCell_' + str(
                                                      middle_idx) + '.mtl')
