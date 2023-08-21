@@ -1,10 +1,11 @@
 import os.path
-
+import numpy as np
 from skimage.transform import resize, rescale
 import glob
 
 from utils.data_io import nib_load, nib_save
 from utils.obj_visulization import combine_objs, rename_objs
+from utils.utils import get_boundary
 
 
 def resize_the_segcell_niigz():
@@ -27,39 +28,42 @@ def set_up_new_training_and_evaluation_data():
     # =================================================
     #  Set new training evaluation dataset
     # =================================================
+    embryo_name_to_save='181210plc1p3'
+    root_path=r'C:\Users\zelinli6\Downloads\OneDrive_1_8-20-2023\EvaluationData\Sample04\SegCell'
+    target_path=r'C:\Users\zelinli6\Downloads\OneDrive_1_8-20-2023\EvaluationData\Sample04\FilppedZSegCell'
+    niigz_paths=glob.glob(os.path.join(root_path,'*.nii.gz'))
+    for niigz_path in niigz_paths:
+        # print(niigz_path,os.path.basename(niigz_path))
+        embryo_name,tp=os.path.basename(niigz_path).split('.')[0].split('_')[:2]
+        arraythis=nib_load(niigz_path)
+        # nib_save(os.path.join(target_path,os.path.basename(niigz)),array)
 
-    # root_path=r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\CMapEvaluationData\CShaperRawLabelData'
-    # target_path=r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\CMapEvaluationData\CShaperRawLabelData\tem'
-    # niigz_paths=glob.glob(os.path.join(root_path,'*.nii.gz'))
-    # for niigz in niigz_paths:
-    #     arraythis=nib.load(niigz).get_fdata()
-    #     # nib_save(os.path.join(target_path,os.path.basename(niigz)),array)
-    #     # arraythis=np.flip(arraythis,0)
-    #     # arraythis=np.flip(arraythis,1)
-    #     arraythis=np.flip(arraythis,2)
-    #     img_stack = resize(image=arraythis, output_shape=(205,285,134), preserve_range=True, order=1).astype(np.uint8)
+        arraythis=np.flip(arraythis,2)
+        img_stack = resize(image=arraythis, output_shape=(184,256,114), preserve_range=True, mode='constant',cval=0,order=0,anti_aliasing=False).astype(np.int16)
 
-    #     nib_save(os.path.join(target_path,os.path.basename(niigz)),img_stack)
-    # -----------generate seg memb-----------------------------------------
-    # trainin_seg_folder = r"F:\TrainingandEvaluation\evaluation\SegCell"
-    # traingi_memb_dst_folder = r"F:\TrainingandEvaluation\evaluation\SegMemb"
-    # # embryo_name = "170704plc1p1"
-    #
-    # seg_cell_file_paths = glob.glob(os.path.join(trainin_seg_folder,"*.nii.gz"))
-    #
-    # for seg_file_path in seg_cell_file_paths:
-    #     seg = nib.load(seg_file_path).get_fdata()
-    #     memb = get_boundary(seg).astype(np.uint8)
-    #     embryo_name,tp=os.path.basename(seg_file_path).split('.')[0].split('_')[:2]
-    #     # save_name_cell = os.path.join(dst_folder, "{}_{}_segCell.nii.gz".format(embryo_name, tp))
-    #     save_seg_memb_path = os.path.join(traingi_memb_dst_folder, "{}_{}_segMemb.nii.gz".format(embryo_name, tp))
-    #     # nib_save(save_name_cell, seg)
-    #     nib_save(save_seg_memb_path, memb)
+        nib_save(img_stack,os.path.join(target_path, "{}_{}_segCell.nii.gz".format(embryo_name_to_save, tp)))
 
+    #-----------generate seg memb-----------------------------------------
+    trainin_seg_folder = r"C:\Users\zelinli6\Downloads\OneDrive_1_8-20-2023\EvaluationData\Sample04\FilppedZSegCell"
+    traingi_memb_dst_folder = r"C:\Users\zelinli6\Downloads\OneDrive_1_8-20-2023\EvaluationData\Sample04\FilppedZSegCell"
+    # embryo_name = "170704plc1p1"
+
+    seg_cell_file_paths = glob.glob(os.path.join(trainin_seg_folder,"*segCell.nii.gz"))
+
+    for seg_file_path in seg_cell_file_paths:
+        seg = nib_load(seg_file_path)
+        memb = get_boundary(seg).astype(np.int16)
+        embryo_name,tp=os.path.basename(seg_file_path).split('.')[0].split('_')[:2]
+        # save_name_cell = os.path.join(dst_folder, "{}_{}_segCell.nii.gz".format(embryo_name, tp))
+        save_seg_memb_path = os.path.join(traingi_memb_dst_folder, "{}_{}_segMemb.nii.gz".format(embryo_name_to_save, tp))
+        # nib_save(save_name_cell, seg)
+        nib_save(memb,save_seg_memb_path)
+
+def check_new_training_evaluating_data():
     # ==============================================
     # check new training data and validation data
     # ==============================================
-    root_path = r'F:\TrainingandEvaluation\evaluation'
+    root_path = r'F:\TrainingandEvaluation\training'
     raw_niigz_paths = glob.glob(os.path.join(root_path, 'RawMemb', '*.nii.gz'))
     for niigz in raw_niigz_paths:
         embryo_name, tp = os.path.basename(niigz).split('.')[0].split('_')[:2]
@@ -74,21 +78,9 @@ def set_up_new_training_and_evaluation_data():
         assert raw_memb_shape == raw_nuc_shape
         assert raw_nuc_shape == seg_nuc_shape
         assert seg_cell_shape == seg_nuc_shape
+        print(seg_nuc_shape)
+        assert len(np.unique((nib_load(seg_nuc_path)))) > 2
 
 
 if __name__ == "__main__":
-    # resize_the_segcell_niigz()
-    embryo_names = ['200109plc1p1']
-    tps = [205]
-
-    # '191108plc1p1'，'200109plc1p1', '200113plc1p2', '200113plc1p3', '200322plc1p2', '200323plc1p1',
-    # '200326plc1p3', '200326plc1p4', '200122plc1lag1ip1', '200122plc1lag1ip2', '200117plc1pop1ip2',
-    # '200117plc1pop1ip3']
-    # tps = [205, 205, 255, 195, 195, 185, 220, 195, 195, 195, 140, 155]
-    max_middle_num = 5
-    root = r'F:\obj_web_visulizaiton\obj_seperated'
-    tiff_map_txt_path = r'F:\obj_web_visulizaiton\tiff\tiffmaptxt'
-    rename_objs(embryo_names,tps,max_middle_num,root,tiff_map_txt_path)
-
-    target_root = r'F:\obj_web_visulizaiton\obj_combined'
-    combine_objs(embryo_names,tps,max_middle_num,root,target_root)
+    check_new_training_evaluating_data()

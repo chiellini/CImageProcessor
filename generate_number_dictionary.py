@@ -4,9 +4,8 @@ This llibrary defines all structures that will be used in the shape analysis
 
 import os
 import glob
-import pickle
 import pandas as pd
-from treelib import Tree, Node
+from treelib import Tree
 
 from utils.data_structure import read_cd_file
 

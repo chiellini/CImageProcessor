@@ -206,10 +206,10 @@ def check_folder(file_folder, overwrite=False):
     elif not os.path.isdir(file_folder):
         os.makedirs(file_folder)
 
-def nib_save(file_name, data, overwrite=False):
-    check_folder(file_name, overwrite)
-    img = nib.Nifti1Image(data, np.eye(4))
-    nib.save(img, file_name)
+# def nib_save(file_name, data, overwrite=False):
+#     check_folder(file_name, overwrite)
+#     img = nib.Nifti1Image(data, np.eye(4))
+#     nib.save(img, file_name)
 
 # def nib_load(file_name):
 #     assert os.path.isfile(file_name), "File {} not exist".format(file_name)

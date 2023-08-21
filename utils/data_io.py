@@ -36,6 +36,7 @@ def pkl_save(data, path):
 
 #  write *.nii.gz files
 def nib_save(data, file_name):
+    print(file_name)
     check_folder(file_name)
     return nib.save(nib.Nifti1Image(data, np.eye(4)), file_name)
 
