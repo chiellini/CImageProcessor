@@ -11,4 +11,9 @@ Pre-process the tiff images of membrane channel to NTFI {embryo_name}_{tp}.nii.g
 * like 3DMNS density map
 
 ## transform 3D NTfTI MRT file *.nii.gz to 3D TIFF FILES
-
+* Run 3D_format_transformation.py
+* Add samples in list of embryo_names
+* Run  def nifti2tiff_seperated(seg_cell_root, tiff_root, segmented=True)
+* Seg_cell_root is input path and tiff_root is output path
+* Input path contains floders of nii.gz files
+* Output path contains .tiff floders and tiffmaptxt floders.
