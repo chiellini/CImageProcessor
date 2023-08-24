@@ -18,7 +18,7 @@ Pre-process the tiff images of membrane channel to NTFI {embryo_name}_{tp}.nii.g
 * Input path contains floders(samples) of nii.gz files
 * Output path contains .tiff floders and tiffmaptxt floders.
 
-![QQ截图20230824103857](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/dd1e9241-5215-4fe0-a43d-2de2e465910e)
+  ![QQ截图20230824103857](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/dd1e9241-5215-4fe0-a43d-2de2e465910e)
 
 
 
@@ -33,16 +33,16 @@ Pre-process the tiff images of membrane channel to NTFI {embryo_name}_{tp}.nii.g
 * Open ImageJ click Plugions, Macros, Run and add draw3DObject.ijm.
   ![QQ截图20230824110956](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/7ee9aaea-ceb9-45f9-926e-5cf353305d42)
 
-  ![QQ截图20230823170900](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/bc13599d-6638-4140-be28-6cab9f517b0d)
+  
+
+## Obj view
+   ![QQ截图20230823170900](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/bc13599d-6638-4140-be28-6cab9f517b0d)
+
+## File structure
+   ![QQ截图20230824114537](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/f169b8a3-f543-494f-8277-191edb7f6b5d)
 
 
 
-![QQ截图20230824114537](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/2bc3594f-c93b-495a-b8ce-567b109b44ca)
-
-
-
-Main Directory
-│
 ├── Input
 │   ├── EmbryoFolder1
 │   │   ├── File1.nii.gz
@@ -80,6 +80,14 @@ Main Directory
 │
 ├── Embryo01_render_indexed.txt
 ├── Embryo02_render_indexed.txt
+│
+├── obj
+│   ├── objEmbryo1
+│   │   ├── objs
+│   │ 
+│   ├── objEmbryo2
+│   │   ├── objs
+│   │ 
 └── ...
 
    
