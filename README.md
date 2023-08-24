@@ -27,9 +27,9 @@ Pre-process the tiff images of membrane channel to NTFI {embryo_name}_{tp}.nii.g
 * Modify tiff_input path  which is output path contains .tiff floders and tiffmaptxt floders by 3D_format_transformation.py. and obj_output path in .ijm. Add embryos in embryonames_list.
    ![QQ截图20230824104248](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/c2ba0a83-5142-4d68-8988-91c02988908f)
 
-* It takes a long time to generate obj files in each embryo. Set screen mode in system to avoid breaking generation. 
-  ![QQ截图20230824105638](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/bc122013-48a4-405c-8737-67af34784937)
-  
+* It takes a long time to generate obj files in each embryo. Set screen mode in system to avoid breaking generation.
+  ![QQ截图20230824112508](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/a190ef69-28f4-4a74-8a7a-6cea6847eda2)
+
 * Open ImageJ click Plugions, Macros, Run and add draw3DObject.ijm.
   ![QQ截图20230824110956](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/7ee9aaea-ceb9-45f9-926e-5cf353305d42)
 
