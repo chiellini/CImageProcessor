@@ -12,8 +12,8 @@ Pre-process the tiff images of membrane channel to NTFI {embryo_name}_{tp}.nii.g
 
 ## transform 3D NTfTI MRT file *.nii.gz to 3D TIFF FILES
 * Run 3D_format_transformation.py
-* Add samples in list of embryo_names
-* Run  def nifti2tiff_seperated(seg_cell_root, tiff_root, segmented=True)
+* Add all embryos in list of embryo_names.
+* Run nifti2tiff_seperated(seg_cell_root, tiff_root, segmented=True)
 * Seg_cell_root is input path and tiff_root is output path
 * Input path contains floders(samples) of nii.gz files
 * Output path contains .tiff floders and tiffmaptxt floders.
@@ -27,8 +27,9 @@ Pre-process the tiff images of membrane channel to NTFI {embryo_name}_{tp}.nii.g
 * Modify right root_tiff_input_path which is output path contains .tiff floders and tiffmaptxt floders by 3D_format_transformation.py.
 * Input root_obj_output_path for obj files.
 * Open ImageJ click Plugions, Macros, Run and add draw3DObject.ijm.
+* Modify tiff_input path and obj_output path in .ijm. Add embryos in embryonames_list. It takes a long time to generate obj files in each embryo.
   
    ![QQ截图20230824104248](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/c2ba0a83-5142-4d68-8988-91c02988908f)
 
-* ImageJ costs long time to generate .obj file.
+* ImageJ costs long time to 
 
