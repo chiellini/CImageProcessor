@@ -33,6 +33,9 @@ Pre-process the tiff images of membrane channel to NTFI {embryo_name}_{tp}.nii.g
 * Open ImageJ click Plugions, Macros, Run and add draw3DObject.ijm.
   ![QQ截图20230824110956](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/7ee9aaea-ceb9-45f9-926e-5cf353305d42)
 
+  ![QQ截图20230823170900](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/bc13599d-6638-4140-be28-6cab9f517b0d)
+
+
 
 
    
