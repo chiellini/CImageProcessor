@@ -36,7 +36,9 @@ Pre-process the tiff images of membrane channel to NTFI {embryo_name}_{tp}.nii.g
   ![QQ截图20230823170900](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/bc13599d-6638-4140-be28-6cab9f517b0d)
 
 
-![Uploading QQ截图20230824114537.png…]()
+
+![QQ截图20230824114537](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/2bc3594f-c93b-495a-b8ce-567b109b44ca)
+
 
 
 Main Directory
