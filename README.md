@@ -17,7 +17,10 @@ Pre-process the tiff images of membrane channel to NTFI {embryo_name}_{tp}.nii.g
 * Seg_cell_root is input path and tiff_root is output path
 * Input path contains floders(samples) of nii.gz files
 * Output path contains .tiff floders and tiffmaptxt floders.
-![QQ截图20230823170900](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/3f1a23ec-e017-4719-a8cb-141ebfe4fbcc)
+
+![QQ截图20230824103857](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/dd1e9241-5215-4fe0-a43d-2de2e465910e)
+
+
 
 ## transform 3D TIFF FILES to .obj FILES
 * Modify draw3DObject.ijm  
