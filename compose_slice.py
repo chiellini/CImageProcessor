@@ -3,6 +3,9 @@ import glob
 import pickle
 import warnings
 import shutil
+
+from utils.data_io import nib_save
+
 warnings.filterwarnings("ignore")
 import numpy as np
 from PIL import Image
@@ -138,12 +141,12 @@ def stack_nuc_slices(para):
         out_stack.insert(0, img)
     img_stack = np.transpose(np.stack(out_stack), axes=(1, 2, 0))
     img_stack = resize(image=img_stack, output_shape=out_size, preserve_range=True, order=1).astype(np.int16)
-    nib_stack = nib.Nifti1Image(img_stack, np.eye(4))
-    nib_stack.header.set_xyzt_units(xyz=3, t=8)
-    nib_stack.header["pixdim"] = [1.0, res[0], res[1], res[2], 0., 0., 0., 0.]
+    # nib_stack = nib.Nifti1Image(img_stack, np.eye(4))
+    # nib_stack.header.set_xyzt_units(xyz=3, t=8)
+    # nib_stack.header["pixdim"] = [1.0, res[0], res[1], res[2], 0., 0., 0., 0.]
     save_file = os.path.join(save_folder, save_file_name)
-    check_folder(save_file)
-    nib.save(nib_stack, save_file)
+    # check_folder(save_file)
+    nib_save(img_stack, save_file)
 
 # ============================================
 # save raw membrane stack
@@ -170,12 +173,11 @@ def stack_memb_slices(para):
     img_stack = rescale_intensity(img_stack, in_range=(v_min, v_max), out_range=(0, 255.0))
     # cut xy, interpolate z
     img_stack = resize(image=img_stack, output_shape=out_size, preserve_range=True, order=1).astype(np.int16)
-    nib_stack = nib.Nifti1Image(img_stack, np.eye(4))
-    nib_stack.header.set_xyzt_units(xyz=3, t=8)
-    nib_stack.header["pixdim"] = [1.0, res[0], res[1], res[2], 0., 0., 0., 0.]
+    # nib_stack = nib.Nifti1Image(img_stack, np.eye(4))
+    # nib_stack.header.set_xyzt_units(xyz=3, t=8)
+    # nib_stack.header["pixdim"] = [1.0, res[0], res[1], res[2], 0., 0., 0., 0.]
     save_file = os.path.join(save_folder, save_file_name)
-    check_folder(save_file)
-    nib.save(nib_stack, save_file)
+    nib_save(img_stack, save_file)
 
 # =============================================
 # save nucleus segmentation
@@ -199,25 +201,25 @@ def save_nuc_seg(para):
 
     # out_seg=out_seg-1
     save_file_name = "_".join([embryo_name, str(tp).zfill(3), "segNuc.nii.gz"])
-    nib_stack = nib.Nifti1Image(out_seg, np.eye(4))
-    nib_stack.header.set_xyzt_units(xyz=3, t=8)
-    nib_stack.header["pixdim"] = [1.0, out_res[0], out_res[1], out_res[2], 0., 0., 0., 0.]
+    # nib_stack = nib.Nifti1Image(out_seg, np.eye(4))
+    # nib_stack.header.set_xyzt_units(xyz=3, t=8)
+    # nib_stack.header["pixdim"] = [1.0, out_res[0], out_res[1], out_res[2], 0., 0., 0., 0.]
     save_file = os.path.join(save_folder, save_file_name)
-    check_folder(save_file)
-    nib.save(nib_stack, save_file)
+    # check_folder(save_file)
+    nib_save(out_seg, save_file)
 
 
 if __name__ == "__main__":
 
-    config = dict(num_slice=68,
-                  embryo_names=['181210plc1p3'],
-                  max_times = [85],
+    config = dict(num_slice=70,
+                  embryo_names=['170614plc1p1'],
+                  max_times = [94],
                   xy_resolution = 0.09,
-                  z_resolution = 0.42,
+                  z_resolution = 0.43,
                   # 94  *   0.43/0.09  *  356/712
                   # out_size=[205, 285, 134],  # todo: need to be calculated with the vertical image amount
 
-                  out_size = [184, 256, 114], # todo: need to be calculated with the vertical image amount
+                  out_size = [256, 356, 168], # todo: need to be calculated with the vertical image amount
                   raw_folder=r'E:\ProjectData\MembraneProject\AllRawData',
                   target_folder=r"C:\Users\zelinli6\Downloads\tem packed membrane nucleus",
                   save_nuc = True,
