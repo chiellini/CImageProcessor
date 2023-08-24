@@ -36,6 +36,8 @@ Pre-process the tiff images of membrane channel to NTFI {embryo_name}_{tp}.nii.g
   ![QQ截图20230823170900](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/bc13599d-6638-4140-be28-6cab9f517b0d)
 
 
+![Uploading QQ截图20230824114537.png…]()
+
 
 Main Directory
 │
@@ -65,8 +67,7 @@ Main Directory
 │   │   ├── EmbryoFolder01
 │   │   │   ├── Embryo01_001_map.txt
 │   │   │   ├── Embryo01_002_map.txt
-│   │   │   └── ...
-│   │   │  
+│   │   │   └── ... 
 │   │   │  
 │   │   ├── EmbryoFolder02
 │   │   │   ├── Embryo02_001_map.txt
