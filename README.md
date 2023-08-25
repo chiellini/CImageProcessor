@@ -38,6 +38,8 @@ Pre-process the tiff images of membrane channel to NTFI {embryo_name}_{tp}.nii.g
 * Find last output obj files and find its index.
 * Because there are serval obj files in a index. Log has information to remapping it.
 * Modify start index "i" in second for loop in draw3DObject.ijm.
+  ![QQ截图20230825154510](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/3233036b-bcf6-4ee1-99e1-9e03a4939fb3)
+
 * ImageJ can continue generating obj after last time.
 
 
