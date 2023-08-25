@@ -31,6 +31,13 @@ Pre-process the tiff images of membrane channel to NTFI {embryo_name}_{tp}.nii.g
   ![QQ截图20230824110956](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/7ee9aaea-ceb9-45f9-926e-5cf353305d42)
 
   
+## Slove imageJ crash
+* Run get_index.ijm and save log as txt.
+* Find last output obj files and find its index.
+* Because there are serval obj files in a index. Log has information to remapping it.
+* Modify start index "i" in second for loop in draw3DObject.ijm.
+* ImageJ can continue generating obj after last time.
+
 
 ## Obj view in ImageJ
    ![QQ截图20230823170900](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/bc13599d-6638-4140-be28-6cab9f517b0d)
