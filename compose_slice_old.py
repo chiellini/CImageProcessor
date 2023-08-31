@@ -5,6 +5,7 @@ import warnings
 import shutil
 
 from utils.data_io import nib_save
+from utils.generate_name_dictionary import add_number_dict
 
 warnings.filterwarnings("ignore")
 import numpy as np
@@ -210,18 +211,27 @@ def save_nuc_seg(para):
 
 
 if __name__ == "__main__":
+    CD_folder = r"C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\tem packed membrane nucleus\CD FILES"
+    nuc_files = sorted(glob.glob(os.path.join(CD_folder, "*.csv")))
 
-    config = dict(num_slice=70,
-                  embryo_names=['170614plc1p1'],
-                  max_times = [94],
+    for idx, nuc_file in enumerate(nuc_files):  # go through all cd files, one cd file for one embryo
+        add_number_dict(nuc_file, max_time=1000)  # the max time for your data
+
+    config = dict(
+        # num_slice=70,
+                  num_slice=92,
+                  # embryo_names=['170704plc1p1'],
+                  # embryo_names=['170614plc1p1'],
+                  embryo_names=['200109plc1p1','200113plc1p2'],
+                  max_times = [205,255],
                   xy_resolution = 0.09,
-                  z_resolution = 0.43,
+                  z_resolution = 0.42,
                   # 94  *   0.43/0.09  *  356/712
                   # out_size=[205, 285, 134],  # todo: need to be calculated with the vertical image amount
 
-                  out_size = [256, 356, 168], # todo: need to be calculated with the vertical image amount
+                  out_size = [256, 356, 214], # todo: need to be calculated with the vertical image amount
                   raw_folder=r'E:\ProjectData\MembraneProject\AllRawData',
-                  target_folder=r"C:\Users\zelinli6\Downloads\tem packed membrane nucleus",
+                  target_folder=r"C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\tem packed membrane nucleus",
                   save_nuc = True,
                   save_memb = True,
                   lineage_file = True,

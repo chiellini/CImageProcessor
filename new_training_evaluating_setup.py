@@ -133,7 +133,10 @@ def check_new_training_evaluating_data():
         seg_cell_path = os.path.join(root_path, 'SegCell', '{}_{}_segCell.nii.gz'.format(embryo_name, tp))
         seg_cell_shape = nib_load(seg_cell_path).shape
         seg_memb_path = os.path.join(root_path, 'SegMemb', '{}_{}_segMemb.nii.gz'.format(embryo_name, tp))
-        seg_memb_shape = nib_load(seg_memb_path).shape
+        seg_memb = nib_load(seg_memb_path)
+        print(embryo_name,tp, 'cell membrane pixel',(seg_memb!=0).sum(),(seg_memb==0).sum(),(seg_memb!=0).sum()/(seg_memb==0).sum())
+        seg_memb_shape=seg_memb.shape
+
 
         seg_nuc_path = os.path.join(root_path, 'SegNuc', '{}_{}_segNuc.nii.gz'.format(embryo_name, tp))
         seg_nuc_shape = nib_load(seg_nuc_path).shape
