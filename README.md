@@ -27,13 +27,21 @@ Pre-process the tiff images of membrane channel to NTFI {embryo_name}_{tp}.nii.g
 * Modify tiff_input path  which is output path contains .tiff floders and tiffmaptxt floders by 3D_format_transformation.py. and obj_output path in .ijm. Add embryos in embryonames_list.
    ![QQ截图20230824104248](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/c2ba0a83-5142-4d68-8988-91c02988908f)
 
-* It takes a long time to generate obj files in each embryo. Set screen mode in system to avoid breaking generation.
-  ![QQ截图20230824112508](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/a190ef69-28f4-4a74-8a7a-6cea6847eda2)
-
 * Open ImageJ click Plugions, Macros, Run and add draw3DObject.ijm.
   ![QQ截图20230824110956](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/7ee9aaea-ceb9-45f9-926e-5cf353305d42)
 
   
+## Slove imageJ crash
+* Run get_index.ijm and save log as txt.
+  <img width="1082" alt="截屏2023-08-25 下午3 36 59" src="https://github.com/chiellini/ImagesPrepocessor/assets/52396207/35e57067-4459-405c-8fae-f6b3b07615ee">
+
+* Find last output obj files and find its index.
+* Because there are serval obj files in a index. Log has information to remapping it.
+* Modify start index "i" in second for loop in draw3DObject.ijm.
+  ![QQ截图20230825154510](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/3233036b-bcf6-4ee1-99e1-9e03a4939fb3)
+
+* ImageJ can continue generating obj after last time.
+
 
 ## Obj view in ImageJ
    ![QQ截图20230823170900](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/bc13599d-6638-4140-be28-6cab9f517b0d)
