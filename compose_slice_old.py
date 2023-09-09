@@ -13,6 +13,7 @@ from PIL import Image
 import nibabel as nib
 import pandas as pd
 from skimage.exposure import rescale_intensity
+from skimage.morphology import ball
 
 import pandas
 from tqdm import tqdm
@@ -165,7 +166,7 @@ def stack_memb_slices(para):
         # transform the image to array and short them in a list
         img = np.asanyarray(Image.open(os.path.join(raw_folder, raw_file_name)))
         if img.shape != (512,712):
-            print('ERRORRRRR',raw_file_name)
+            print('ERRORRRRR',img.shape,raw_file_name)
         out_stack.insert(0, img)
 
 
@@ -199,6 +200,9 @@ def save_nuc_seg(para):
     locs = list(nuc_dict.values())
     out_seg = np.zeros(out_size, dtype=np.int16)
     out_seg[tuple(zip(*locs))] = labels
+    nucleus_marker_footprint = ball(7 - int(int(tp) / 100))
+    out_seg = ndimage.morphology.grey_dilation(out_seg, footprint=nucleus_marker_footprint)
+    # out_seg=ndimage.
 
     # out_seg=out_seg-1
     save_file_name = "_".join([embryo_name, str(tp).zfill(3), "segNuc.nii.gz"])
@@ -222,8 +226,10 @@ if __name__ == "__main__":
                   num_slice=92,
                   # embryo_names=['170704plc1p1'],
                   # embryo_names=['170614plc1p1'],
-                  embryo_names=['200109plc1p1','200113plc1p2'],
-                  max_times = [205,255],
+                  embryo_names=['191108plc1p1', '200109plc1p1', '200113plc1p2', '200113plc1p3', '200322plc1p2', '200323plc1p1',
+                    '200326plc1p3', '200326plc1p4', '200122plc1lag1ip1', '200122plc1lag1ip2', '200117plc1pop1ip2',
+                    '200117plc1pop1ip3'],
+                  max_times = [205, 205, 255, 195, 195, 185, 220, 195, 195, 195, 140, 155],
                   xy_resolution = 0.09,
                   z_resolution = 0.42,
                   # 94  *   0.43/0.09  *  356/712
@@ -232,8 +238,8 @@ if __name__ == "__main__":
                   out_size = [256, 356, 214], # todo: need to be calculated with the vertical image amount
                   raw_folder=r'E:\ProjectData\MembraneProject\AllRawData',
                   target_folder=r"C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\tem packed membrane nucleus",
-                  save_nuc = True,
-                  save_memb = True,
+                  save_nuc = False,
+                  save_memb = False,
                   lineage_file = True,
                   name_dictionary = r"./necessary_files/name_dictionary.csv"
                   )
