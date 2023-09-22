@@ -31,7 +31,7 @@ Pre-process the tiff images of membrane channel to NTFI {embryo_name}_{tp}.nii.g
   ![QQ截图20230824110956](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/7ee9aaea-ceb9-45f9-926e-5cf353305d42)
 
   
-## Slove imageJ crash
+## Solve imageJ crash
 * Run get_index.ijm and save log as txt.
   <img width="1082" alt="截屏2023-08-25 下午3 36 59" src="https://github.com/chiellini/ImagesPrepocessor/assets/52396207/35e57067-4459-405c-8fae-f6b3b07615ee">
 
