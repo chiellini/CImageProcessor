@@ -42,24 +42,25 @@ def combine_slices(config):
     stack_folder = config["target_folder"]
     is_save_nuc_channel = config["save_nuc"]
     is_save_memb_channel = config["save_memb"]
-    is_save_seg_cell_with_cd_file=config["lineage_file"]
-
+    is_save_seg_cell_with_cd_file = config["is_ace_cd_file"]
 
     # get output size
     raw_memb_files = glob.glob(os.path.join(raw_folder, embryo_names[0], "tifR", "*.tif"))
     print(raw_memb_files)
     raw_size = list(np.asarray(Image.open(raw_memb_files[0])).shape) + [int(num_slice * z_res / xy_res)]
-    out_res = [res * in_scale / out_scale for res, in_scale, out_scale in zip([xy_res, xy_res, xy_res], raw_size, out_size)]
+    out_res = [res * in_scale / out_scale for res, in_scale, out_scale in
+               zip([xy_res, xy_res, xy_res], raw_size, out_size)]
     print(out_res)
 
     # multiprocessing
     mpPool = mp.Pool(mp.cpu_count() - 1)
 
-    for idx_embryo,embryo_name in enumerate(embryo_names):
+    for idx_embryo, embryo_name in enumerate(embryo_names):
 
         # get lineage file
         if is_save_seg_cell_with_cd_file:
-            lineage_file_path = os.path.join(config["raw_folder"], embryo_name, "aceNuc", "CD{}.csv".format(embryo_name))
+            lineage_file_path = os.path.join(config["raw_folder"], embryo_name, "aceNuc",
+                                             "CD{}.csv".format(embryo_name))
         else:
             lineage_file_path = None
 
@@ -97,7 +98,7 @@ def combine_slices(config):
         # save nucleus
         if is_save_seg_cell_with_cd_file:
             assert lineage_file_path is not None
-            target_folder = os.path.join(stack_folder, embryo_name, "SegNuc")
+            target_folder = os.path.join(stack_folder, embryo_name, "AnnotatedNuc")
             if not os.path.isdir(target_folder):
                 os.makedirs(target_folder)
             pd_lineage = read_cd_file(lineage_file_path)
@@ -111,7 +112,7 @@ def combine_slices(config):
                 configs.append((embryo_name, name_label_dict, pd_lineage, tp, raw_size, out_size, out_res,
                                 xy_res / z_res, target_folder))
                 # save_nuc_seg(configs[0])
-            for idx, _ in enumerate(tqdm(mpPool.imap_unordered(save_nuc_seg, configs), total=len(configs),
+            for idx, _ in enumerate(tqdm(mpPool.imap_unordered(save_annotated_ace_nuc, configs), total=len(configs),
                                          desc="3/3 Construct nucleus location of {}".format(embryo_name))):
                 # TODO: Process Name: `3/3 Construct nucleus location`; Current status: `idx`; Final status: max_time
                 pass
@@ -126,6 +127,7 @@ def combine_slices(config):
             #                  dif_res=xy_res/z_res,
             #                  save_folder=target_folder)
             shutil.copy(lineage_file_path, os.path.join(stack_folder, embryo_name))
+
 
 # ============================================
 # save raw nucleus stack
@@ -150,6 +152,7 @@ def stack_nuc_slices(para):
     # check_folder(save_file)
     nib_save(img_stack, save_file)
 
+
 # ============================================
 # save raw membrane stack
 # ============================================
@@ -158,20 +161,19 @@ def stack_memb_slices(para):
 
     out_stack = []
     save_file_name = "{}_{}_rawMemb.nii.gz".format(embryo_name, str(tp).zfill(3))
-    for i_slice in range(1, num_slice+1):
-        #r"D:\TemDownload\201112plc1_late_Lng\tifR\c elegans 3.lif_Series001_Lng_001_t00_z08_ch01.tif"
+    for i_slice in range(1, num_slice + 1):
+        # r"D:\TemDownload\201112plc1_late_Lng\tifR\c elegans 3.lif_Series001_Lng_001_t00_z08_ch01.tif"
         # raw_file_name = "{}deconp1_L1-t{}-p{}.tif".format(embryo_name[:-2], str(tp).zfill(3), str(i_slice).zfill(2))
         raw_file_name = "{}_L1-t{}-p{}.tif".format(embryo_name, str(tp).zfill(3), str(i_slice).zfill(2))
 
         # transform the image to array and short them in a list
         img = np.asanyarray(Image.open(os.path.join(raw_folder, raw_file_name)))
-        if img.shape != (512,712):
-            print('ERRORRRRR',img.shape,raw_file_name)
+        if img.shape != (512, 712):
+            print('ERRORRRRR', img.shape, raw_file_name)
         out_stack.insert(0, img)
 
-
-    img_stack = np.transpose(np.stack(out_stack), axes=(1, 2, 0)) # trasnpose the image from zxy to xyz
-    v_min, v_max = np.percentile(img_stack, (0.2, 99.9)) # erase the outrange grayscale
+    img_stack = np.transpose(np.stack(out_stack), axes=(1, 2, 0))  # trasnpose the image from zxy to xyz
+    v_min, v_max = np.percentile(img_stack, (0.2, 99.9))  # erase the outrange grayscale
     img_stack = rescale_intensity(img_stack, in_range=(v_min, v_max), out_range=(0, 255.0))
     # cut xy, interpolate z
     img_stack = resize(image=img_stack, output_shape=out_size, preserve_range=True, order=1).astype(np.int16)
@@ -181,10 +183,11 @@ def stack_memb_slices(para):
     save_file = os.path.join(save_folder, save_file_name)
     nib_save(img_stack, save_file)
 
+
 # =============================================
 # save nucleus segmentation
 # =============================================
-def save_nuc_seg(para):
+def save_annotated_ace_nuc(para):
     [embryo_name, name_dict, pd_lineage, tp, raw_size, out_size, out_res, dif_res, save_folder] = para
 
     zoom_ratio = [y / x for x, y in zip(raw_size, out_size)]
@@ -205,7 +208,7 @@ def save_nuc_seg(para):
     # out_seg=ndimage.
 
     # out_seg=out_seg-1
-    save_file_name = "_".join([embryo_name, str(tp).zfill(3), "segNuc.nii.gz"])
+    save_file_name = "_".join([embryo_name, str(tp).zfill(3), "annotatedNuc.nii.gz"])
     # nib_stack = nib.Nifti1Image(out_seg, np.eye(4))
     # nib_stack.header.set_xyzt_units(xyz=3, t=8)
     # nib_stack.header["pixdim"] = [1.0, out_res[0], out_res[1], out_res[2], 0., 0., 0., 0.]
@@ -222,26 +225,48 @@ if __name__ == "__main__":
         add_number_dict(nuc_file, max_time=1000)  # the max time for your data
 
     config = dict(
-        # num_slice=70,
-                  num_slice=92,
-                  # embryo_names=['170704plc1p1'],
-                  # embryo_names=['170614plc1p1'],
-                  embryo_names=['191108plc1p1', '200109plc1p1', '200113plc1p2', '200113plc1p3', '200322plc1p2', '200323plc1p1',
-                    '200326plc1p3', '200326plc1p4', '200122plc1lag1ip1', '200122plc1lag1ip2', '200117plc1pop1ip2',
-                    '200117plc1pop1ip3'],
-                  max_times = [205, 205, 255, 195, 195, 185, 220, 195, 195, 195, 140, 155],
-                  xy_resolution = 0.09,
-                  z_resolution = 0.42,
-                  # 94  *   0.43/0.09  *  356/712
-                  # out_size=[205, 285, 134],  # todo: need to be calculated with the vertical image amount
+        # =============================================
+        num_slice=70,
+        embryo_names=['170704plc1p1','170614plc1p1'],
+        max_times=[150,240],
+        z_resolution=0.43,
+        out_size=[256, 356, 168],  # todo: need to be MANUALLY calculated with the vertical image amount
+        # ====================================================
 
-                  out_size = [256, 356, 214], # todo: need to be calculated with the vertical image amount
-                  raw_folder=r'E:\ProjectData\MembraneProject\AllRawData',
-                  target_folder=r"C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\tem packed membrane nucleus",
-                  save_nuc = False,
-                  save_memb = False,
-                  lineage_file = True,
-                  name_dictionary = r"./necessary_files/name_dictionary.csv"
-                  )
+        # ========================================
+        # num_slice=68,
+        # embryo_names=[
+        #     '190314plc1p3', '181210plc1p3', '181210plc1p1', '181210plc1p2', '200309plc1p1', '200309plc1p2',
+        #     '200309plc1p3',
+        #     '200311plc1p1', '200311plc1p3', '200312plc1p2', '200314plc1p1', '200314plc1p2', '200314plc1p3',
+        #     '200315plc1p2',
+        #     '200315plc1p3', '200316plc1p1', '200316plc1p2', '200316plc1p3'
+        # ],
+        # max_times=[90, 150, 170, 210, 165, 160, 160, 160, 170, 165, 150, 155, 170, 160, 160, 160, 160, 170],
+        # z_resolution=0.42,
+        # out_size=[256, 356, 160],  # todo: need to be MANUALLY calculated with the vertical image amount
+
+        # ================================================================
+        # num_slice=92,
+        # embryo_names=['191108plc1p1', '200109plc1p1', '200113plc1p2', '200113plc1p3', '200322plc1p2', '200323plc1p1',
+        #             '200326plc1p3', '200326plc1p4', '200122plc1lag1ip1', '200122plc1lag1ip2', '200117plc1pop1ip2',
+        #             '200117plc1pop1ip3'],
+        # max_times = [205, 205, 255, 195,195, 185, 220, 195, 195, 195, 140, 155],
+        # z_resolution=0.42,
+        # out_size=[256, 356, 214],  # todo: need to be MANUALLY calculated with the vertical image amount
+
+        # =============================================
+
+        xy_resolution=0.09,
+        # 94  *   0.43/0.09  *  356/712
+        # out_size=[205, 285, 134],  # todo: need to be MANUALLY calculated with the vertical image amount
+
+        raw_folder=r'E:\ProjectData\MembraneProject\AllRawData',
+        target_folder=r"C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\tem packed membrane nucleus",
+        save_nuc=False,
+        save_memb=False,
+        is_ace_cd_file=True,
+        name_dictionary=r"./necessary_files/name_dictionary.csv"
+    )
 
     combine_slices(config)
