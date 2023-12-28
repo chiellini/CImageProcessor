@@ -10,7 +10,7 @@ from utils.generate_name_dictionary import add_number_dict
 warnings.filterwarnings("ignore")
 import numpy as np
 from PIL import Image
-import nibabel as nib
+# import nibabel as nib
 import pandas as pd
 from skimage.exposure import rescale_intensity
 from skimage.morphology import ball
@@ -46,7 +46,7 @@ def combine_slices(config):
 
     # get output size
     raw_memb_files = glob.glob(os.path.join(raw_folder, embryo_names[0], "tifR", "*.tif"))
-    print(raw_memb_files)
+    # print(raw_memb_files)
     raw_size = list(np.asarray(Image.open(raw_memb_files[0])).shape) + [int(num_slice * z_res / xy_res)]
     out_res = [res * in_scale / out_scale for res, in_scale, out_scale in
                zip([xy_res, xy_res, xy_res], raw_size, out_size)]
@@ -218,19 +218,53 @@ def save_annotated_ace_nuc(para):
 
 
 if __name__ == "__main__":
-    CD_folder = r"C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\tem packed membrane nucleus\CD FILES"
-    nuc_files = sorted(glob.glob(os.path.join(CD_folder, "*.csv")))
+    IS_CD_FILES=True
+    if IS_CD_FILES:
+        CD_folder = r"F:\packed membrane nucleus 3d niigz\CD FILES"
+        nuc_files = sorted(glob.glob(os.path.join(CD_folder, "*.csv")))
 
-    for idx, nuc_file in enumerate(nuc_files):  # go through all cd files, one cd file for one embryo
-        add_number_dict(nuc_file, max_time=1000)  # the max time for your data
+        for idx, nuc_file in enumerate(nuc_files):  # go through all cd files, one cd file for one embryo
+            add_number_dict(nuc_file, max_time=1000)  # the max time for your data
 
     config = dict(
+
+
+
+        # ====================================
+        num_slice=94,
+        embryo_names=['221017plc1p2','230215plc1ced3p3'],
+        max_times=[240,240],
+        z_resolution=0.42,
+        out_size=[256, 356, 224],  # todo: need to be MANUALLY calculated with the vertical image amount
+        # ======================================
+
+        # ====================================
+        # num_slice=68,
+        # embryo_names=['190311plc1mp1','190311plc1mp3'],
+        # max_times=[60,60],
+        # z_resolution=0.42,
+        # out_size=[256, 356, 160],  # todo: need to be MANUALLY calculated with the vertical image amount
+        # ======================================
+
+        # ====================================
+        # num_slice=68,
+        # embryo_names=['191022plc1pop1ip1','191022plc1pop1ip2'],
+        # max_times=[150,220],
+        # z_resolution=0.42,
+        # out_size=[256, 356, 160],  # todo: need to be MANUALLY calculated with the vertical image amount
+        # ======================================
+
+
         # =============================================
-        num_slice=70,
-        embryo_names=['170704plc1p1','170614plc1p1'],
-        max_times=[150,240],
-        z_resolution=0.43,
-        out_size=[256, 356, 168],  # todo: need to be MANUALLY calculated with the vertical image amount
+        # num_slice=70,
+        # # embryo_names=['170614plc1p1','170704plc1p1'],
+        # # max_times=[150,240],
+        #
+        # embryo_names=['170704plc1p1'],
+        # max_times=[240],
+        #
+        # z_resolution=0.43,
+        # out_size=[256, 356, 168],  # todo: need to be MANUALLY calculated with the vertical image amount
         # ====================================================
 
         # ========================================
@@ -262,10 +296,10 @@ if __name__ == "__main__":
         # out_size=[205, 285, 134],  # todo: need to be MANUALLY calculated with the vertical image amount
 
         raw_folder=r'E:\ProjectData\MembraneProject\AllRawData',
-        target_folder=r"C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\tem packed membrane nucleus",
+        target_folder=r"F:\packed membrane nucleus 3d niigz",
         save_nuc=False,
         save_memb=False,
-        is_ace_cd_file=True,
+        is_ace_cd_file=IS_CD_FILES,
         name_dictionary=r"./necessary_files/name_dictionary.csv"
     )
 

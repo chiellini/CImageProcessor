@@ -19,22 +19,23 @@ def add_number_dict(nucleus_file, max_time):
 
     ##  Construct cell
     #  Add unregulized naming
-    cell_tree = Tree()
-    cell_tree.create_node('P0', 'P0')
-    cell_tree.create_node('AB', 'AB', parent='P0')
-    cell_tree.create_node('P1', 'P1', parent='P0')
-    cell_tree.create_node('EMS', 'EMS', parent='P1')
-    cell_tree.create_node('P2', 'P2', parent='P1')
-    cell_tree.create_node('P3', 'P3', parent='P2')
-    cell_tree.create_node('C', 'C', parent='P2')
-    cell_tree.create_node('P4', 'P4', parent='P3')
-    cell_tree.create_node('D', 'D', parent='P3')
-    cell_tree.create_node('Z2', 'Z2', parent='P4')
-    cell_tree.create_node('Z3', 'Z3', parent='P4')
 
-    # EMS
-    cell_tree.create_node('E', 'E', parent='EMS')
-    cell_tree.create_node('MS', 'MS', parent='EMS')
+    # cell_tree = Tree()
+    # cell_tree.create_node('P0', 'P0')
+    # cell_tree.create_node('AB', 'AB', parent='P0')
+    # cell_tree.create_node('P1', 'P1', parent='P0')
+    # cell_tree.create_node('EMS', 'EMS', parent='P1')
+    # cell_tree.create_node('P2', 'P2', parent='P1')
+    # cell_tree.create_node('P3', 'P3', parent='P2')
+    # cell_tree.create_node('C', 'C', parent='P2')
+    # cell_tree.create_node('P4', 'P4', parent='P3')
+    # cell_tree.create_node('D', 'D', parent='P3')
+    # cell_tree.create_node('Z2', 'Z2', parent='P4')
+    # cell_tree.create_node('Z3', 'Z3', parent='P4')
+    #
+    # # EMS
+    # cell_tree.create_node('E', 'E', parent='EMS')
+    # cell_tree.create_node('MS', 'MS', parent='EMS')
 
     # # Read the name excel and construct the tree with complete segCell
     # df_time = read_cd_file(nuc_file)
@@ -78,25 +79,25 @@ def add_number_dict(nucleus_file, max_time):
         pd_name_dictionary.to_csv('./necessary_files/name_dictionary.csv')
 
 
-class cell_node(object):
-    # Node Data in cell tree
-    def __init__(self):
-        self.number = 0
-        self.time = 0
-
-    def set_number(self, number):
-        self.number = number
-
-    def get_number(self):
-
-        return self.number
-
-    def set_time(self, time):
-        self.time = time
-
-    def get_time(self):
-
-        return self.time
+# class cell_node(object):
+#     # Node Data in cell tree
+#     def __init__(self):
+#         self.number = 0
+#         self.time = 0
+#
+#     def set_number(self, number):
+#         self.number = number
+#
+#     def get_number(self):
+#
+#         return self.number
+#
+#     def set_time(self, time):
+#         self.time = time
+#
+#     def get_time(self):
+#
+#         return self.time
 
 
 
