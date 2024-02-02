@@ -8,7 +8,8 @@ from scipy.ndimage.morphology import binary_closing
 from skimage.transform import resize, rescale
 
 # ------user's packages------
-from utils.utils import save_indexed_tif, scale2index, nib_save
+from utils.utils import save_indexed_tif, scale2index
+from utils.data_io import nib_save
 
 
 def tiff2nifti(root, target):
@@ -162,16 +163,28 @@ if __name__ == "__main__":
     #     target=r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\CMapEvaluationData\RawTif',
     #     segmented=False)
 
-    # ------------cmap data niigz to tiff -------------------------
-    embryo_names = ['191108plc1p1', '200109plc1p1', '200113plc1p2', '200113plc1p3', '200322plc1p2', '200323plc1p1',
-                    '200326plc1p3', '200326plc1p4', '200122plc1lag1ip1', '200122plc1lag1ip2', '200117plc1pop1ip2',
-                    '200117plc1pop1ip3']
-    root = r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\GUIData\WebData_CMap_cell_label_v3'
-    target = r'F:\obj_web_visulizaiton\tiff'
+    # ============================ niigz to tiff ============================
+    embryo_names = ['231229cnhis72p1']
+    root = r'F:\packed membrane nucleus 3d niigz'
+    target = r'F:\temp\TIFF'
     for embryo_name in embryo_names:
-        seg_cell_root = os.path.join(root, embryo_name, 'SegCell')
+        seg_cell_root = os.path.join(root, embryo_name, 'RawNuc')
         tiff_root = os.path.join(target, embryo_name)
-        nifti2tiff_seperated(seg_cell_root, tiff_root, segmented=True)
+        nifti2tiff_seperated(seg_cell_root, tiff_root, segmented=False)
+    # ============================ niigz to tiff ============================
+
+
+    # # =============================== cmap data niigz to tiff ===========================
+    # embryo_names = ['191108plc1p1', '200109plc1p1', '200113plc1p2', '200113plc1p3', '200322plc1p2', '200323plc1p1',
+    #                 '200326plc1p3', '200326plc1p4', '200122plc1lag1ip1', '200122plc1lag1ip2', '200117plc1pop1ip2',
+    #                 '200117plc1pop1ip3']
+    # root = r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\GUIData\WebData_CMap_cell_label_v3'
+    # target = r'F:\obj_web_visulizaiton\tiff'
+    # for embryo_name in embryo_names:
+    #     seg_cell_root = os.path.join(root, embryo_name, 'SegCell')
+    #     tiff_root = os.path.join(target, embryo_name)
+    #     nifti2tiff_seperated(seg_cell_root, tiff_root, segmented=True)
+    # # =============================== cmap data niigz to tiff ===========================
 
     # tiff2nifti(r'F:\test',r'F:\test')
     # nifti2tiff(r'C:\Users\zelinli6\Downloads\stardist_3d_data\testnifti\images',r'C:\Users\zelinli6\Downloads\stardist_3d_data\test\images',segmented=False)

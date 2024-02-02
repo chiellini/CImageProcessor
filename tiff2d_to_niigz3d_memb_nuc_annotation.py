@@ -45,9 +45,12 @@ def combine_slices(config):
     is_save_seg_cell_with_cd_file = config["is_ace_cd_file"]
 
     # get output size
-    raw_memb_files = glob.glob(os.path.join(raw_folder, embryo_names[0], "tifR", "*.tif"))
+    if is_save_nuc_channel:
+        raw_image_files = glob.glob(os.path.join(raw_folder, embryo_names[0], "tif", "*.tif"))
+    else:
+        raw_image_files = glob.glob(os.path.join(raw_folder, embryo_names[0], "tifR", "*.tif"))
     # print(raw_memb_files)
-    raw_size = list(np.asarray(Image.open(raw_memb_files[0])).shape) + [int(num_slice * z_res / xy_res)]
+    raw_size = list(np.asarray(Image.open(raw_image_files[0])).shape) + [int(num_slice * z_res / xy_res)]
     out_res = [res * in_scale / out_scale for res, in_scale, out_scale in
                zip([xy_res, xy_res, xy_res], raw_size, out_size)]
     print(out_res)
@@ -173,8 +176,8 @@ def stack_memb_slices(para):
         out_stack.insert(0, img)
 
     img_stack = np.transpose(np.stack(out_stack), axes=(1, 2, 0))  # trasnpose the image from zxy to xyz
-    v_min, v_max = np.percentile(img_stack, (0.2, 99.9))  # erase the outrange grayscale
-    img_stack = rescale_intensity(img_stack, in_range=(v_min, v_max), out_range=(0, 255.0))
+    # v_min, v_max = np.percentile(img_stack, (0.2, 99.9))  # erase the outrange grayscale
+    # img_stack = rescale_intensity(img_stack, in_range=(v_min, v_max), out_range=(0, 255.0))
     # cut xy, interpolate z
     img_stack = resize(image=img_stack, output_shape=out_size, preserve_range=True, order=1).astype(np.int16)
     # nib_stack = nib.Nifti1Image(img_stack, np.eye(4))
@@ -218,7 +221,7 @@ def save_annotated_ace_nuc(para):
 
 
 if __name__ == "__main__":
-    IS_CD_FILES=True
+    IS_CD_FILES=False
     if IS_CD_FILES:
         CD_folder = r"F:\packed membrane nucleus 3d niigz\CD FILES"
         nuc_files = sorted(glob.glob(os.path.join(CD_folder, "*.csv")))
@@ -227,15 +230,20 @@ if __name__ == "__main__":
             add_number_dict(nuc_file, max_time=1000)  # the max time for your data
 
     config = dict(
-
-
+        # # ==========================================================================================
+        # num_slice=90,
+        # embryo_names=['231229cnhis72p1'],
+        # max_times=[250],
+        # z_resolution=0.43,
+        # out_size=[256, 356, 224],  # todo: need to be MANUALLY calculated with the vertical image amount
+        # #===========================================================================================
 
         # ====================================
-        num_slice=94,
-        embryo_names=['221017plc1p2','230215plc1ced3p3'],
-        max_times=[240,240],
-        z_resolution=0.42,
-        out_size=[256, 356, 224],  # todo: need to be MANUALLY calculated with the vertical image amount
+        # num_slice=94,
+        # embryo_names=['221017plc1p2','230215plc1ced3p3'],
+        # max_times=[240,240],
+        # z_resolution=0.42,
+        # out_size=[256, 356, 224],  # todo: need to be MANUALLY calculated with the vertical image amount
         # ======================================
 
         # ====================================
@@ -257,11 +265,8 @@ if __name__ == "__main__":
 
         # =============================================
         # num_slice=70,
-        # # embryo_names=['170614plc1p1','170704plc1p1'],
-        # # max_times=[150,240],
-        #
-        # embryo_names=['170704plc1p1'],
-        # max_times=[240],
+        # embryo_names=['170614plc1p1','170704plc1p1'],
+        # max_times=[150,240],
         #
         # z_resolution=0.43,
         # out_size=[256, 356, 168],  # todo: need to be MANUALLY calculated with the vertical image amount
@@ -269,25 +274,25 @@ if __name__ == "__main__":
 
         # ========================================
         # num_slice=68,
-        # embryo_names=[
-        #     '190314plc1p3', '181210plc1p3', '181210plc1p1', '181210plc1p2', '200309plc1p1', '200309plc1p2',
-        #     '200309plc1p3',
-        #     '200311plc1p1', '200311plc1p3', '200312plc1p2', '200314plc1p1', '200314plc1p2', '200314plc1p3',
-        #     '200315plc1p2',
-        #     '200315plc1p3', '200316plc1p1', '200316plc1p2', '200316plc1p3'
-        # ],
-        # max_times=[90, 150, 170, 210, 165, 160, 160, 160, 170, 165, 150, 155, 170, 160, 160, 160, 160, 170],
-        # z_resolution=0.42,
-        # out_size=[256, 356, 160],  # todo: need to be MANUALLY calculated with the vertical image amount
+        #embryo_names=[
+        #    '190314plc1p3', '181210plc1p3', '181210plc1p1', '181210plc1p2', '200309plc1p1', '200309plc1p2',
+        #    '200309plc1p3',
+        #    '200311plc1p1', '200311plc1p3', '200312plc1p2', '200314plc1p1', '200314plc1p2', '200314plc1p3',
+        #    '200315plc1p2',
+        #    '200315plc1p3', '200316plc1p1', '200316plc1p2', '200316plc1p3'
+        #],
+        #max_times=[90, 150, 170, 210, 165, 160, 160, 160, 170, 165, 150, 155, 170, 160, 160, 160, 160, 170],
+        #z_resolution=0.42,
+        #out_size=[256, 356, 160],  # todo: need to be MANUALLY calculated with the vertical image amount
 
         # ================================================================
-        # num_slice=92,
-        # embryo_names=['191108plc1p1', '200109plc1p1', '200113plc1p2', '200113plc1p3', '200322plc1p2', '200323plc1p1',
-        #             '200326plc1p3', '200326plc1p4', '200122plc1lag1ip1', '200122plc1lag1ip2', '200117plc1pop1ip2',
-        #             '200117plc1pop1ip3'],
-        # max_times = [205, 205, 255, 195,195, 185, 220, 195, 195, 195, 140, 155],
-        # z_resolution=0.42,
-        # out_size=[256, 356, 214],  # todo: need to be MANUALLY calculated with the vertical image amount
+        num_slice=92,
+        embryo_names=['191108plc1p1', '200109plc1p1', '200113plc1p2', '200113plc1p3', '200322plc1p2', '200323plc1p1',
+                    '200326plc1p3', '200326plc1p4', '200122plc1lag1ip1', '200122plc1lag1ip2', '200117plc1pop1ip2',
+                    '200117plc1pop1ip3'],
+        max_times = [205, 205, 255, 195,195, 185, 220, 195, 195, 195, 140, 155],
+        z_resolution=0.42,
+        out_size=[256, 356, 214],  # todo: need to be MANUALLY calculated with the vertical image amount
 
         # =============================================
 
@@ -298,7 +303,7 @@ if __name__ == "__main__":
         raw_folder=r'E:\ProjectData\MembraneProject\AllRawData',
         target_folder=r"F:\packed membrane nucleus 3d niigz",
         save_nuc=False,
-        save_memb=False,
+        save_memb=True,
         is_ace_cd_file=IS_CD_FILES,
         name_dictionary=r"./necessary_files/name_dictionary.csv"
     )

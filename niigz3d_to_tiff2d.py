@@ -48,14 +48,14 @@ def seperate_3dniigz_to_2dtif(source_niigz_file_path, target_tif_root_path, raw_
         # tif_image.save(saving_tif_path,format='TIFF')
 
 if __name__=='__main__':
-    embryo_names=['200113plc1p2']
-    max_times=[255]
+    embryo_names=['231229cnhis72p1']
+    max_times=[250]
 
     raw_tiff_root=r'E:\ProjectData\MembraneProject\AllRawData'
-    niigz_source_path=r'F:\TUNETr dataset\NucSegOutputGrayScale255ByStarDist3d'
-    saving_target_tif_root=r'C:\Users\zelinli6\Downloads\NucSegOutputGrayScale255ByStarDist3dForNucTracingTIFF'
+    niigz_source_path=r'F:\temp\SegNucNIIGZ'
+    saving_target_tif_root=r'D:\MembraneProjectData\10 nucleus tracing enhancement\NucEnhancementForYimingTesting'
 
     for embryo_i, embryo_name in enumerate(embryo_names):
         for tp in range(1,max_times[embryo_i]+1):
             niigz3d_this_path=os.path.join(niigz_source_path,embryo_name+'Sd','{}_{}_rawNuc_predNuc.nii.gz'.format(embryo_name,str(tp).zfill(3)))
-            seperate_3dniigz_to_2dtif(niigz3d_this_path,saving_target_tif_root,raw_tiff_root,target_shape=(512,712,92))
+            seperate_3dniigz_to_2dtif(niigz3d_this_path,saving_target_tif_root,raw_tiff_root,target_shape=(512,712,90))
