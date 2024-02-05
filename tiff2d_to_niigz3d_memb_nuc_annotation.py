@@ -176,8 +176,8 @@ def stack_memb_slices(para):
         out_stack.insert(0, img)
 
     img_stack = np.transpose(np.stack(out_stack), axes=(1, 2, 0))  # trasnpose the image from zxy to xyz
-    # v_min, v_max = np.percentile(img_stack, (0.2, 99.9))  # erase the outrange grayscale
-    # img_stack = rescale_intensity(img_stack, in_range=(v_min, v_max), out_range=(0, 255.0))
+    v_min, v_max = np.percentile(img_stack, (0.2, 99.9))  # erase the outrange grayscale
+    img_stack = rescale_intensity(img_stack, in_range=(v_min, v_max), out_range=(0, 255.0))
     # cut xy, interpolate z
     img_stack = resize(image=img_stack, output_shape=out_size, preserve_range=True, order=1).astype(np.int16)
     # nib_stack = nib.Nifti1Image(img_stack, np.eye(4))
@@ -255,11 +255,11 @@ if __name__ == "__main__":
         # ======================================
 
         # ====================================
-        # num_slice=68,
-        # embryo_names=['191022plc1pop1ip1','191022plc1pop1ip2'],
-        # max_times=[150,220],
-        # z_resolution=0.42,
-        # out_size=[256, 356, 160],  # todo: need to be MANUALLY calculated with the vertical image amount
+        num_slice=68,
+        embryo_names=['191022plc1pop1ip1','191022plc1pop1ip2'],
+        max_times=[150,220],
+        z_resolution=0.42,
+        out_size=[256, 356, 160],  # todo: need to be MANUALLY calculated with the vertical image amount
         # ======================================
 
 
@@ -274,26 +274,25 @@ if __name__ == "__main__":
 
         # ========================================
         # num_slice=68,
-        #embryo_names=[
+        # embryo_names=[
         #    '190314plc1p3', '181210plc1p3', '181210plc1p1', '181210plc1p2', '200309plc1p1', '200309plc1p2',
         #    '200309plc1p3',
         #    '200311plc1p1', '200311plc1p3', '200312plc1p2', '200314plc1p1', '200314plc1p2', '200314plc1p3',
         #    '200315plc1p2',
         #    '200315plc1p3', '200316plc1p1', '200316plc1p2', '200316plc1p3'
-        #],
-        #max_times=[90, 150, 170, 210, 165, 160, 160, 160, 170, 165, 150, 155, 170, 160, 160, 160, 160, 170],
-        #z_resolution=0.42,
-        #out_size=[256, 356, 160],  # todo: need to be MANUALLY calculated with the vertical image amount
+        # ],
+        # max_times=[90, 150, 170, 210, 165, 160, 160, 160, 170, 165, 150, 155, 170, 160, 160, 160, 160, 170],
+        # z_resolution=0.42,
+        # out_size=[256, 356, 160],  # todo: need to be MANUALLY calculated with the vertical image amount
 
         # ================================================================
-        num_slice=92,
-        embryo_names=['191108plc1p1', '200109plc1p1', '200113plc1p2', '200113plc1p3', '200322plc1p2', '200323plc1p1',
-                    '200326plc1p3', '200326plc1p4', '200122plc1lag1ip1', '200122plc1lag1ip2', '200117plc1pop1ip2',
-                    '200117plc1pop1ip3'],
-        max_times = [205, 205, 255, 195,195, 185, 220, 195, 195, 195, 140, 155],
-        z_resolution=0.42,
-        out_size=[256, 356, 214],  # todo: need to be MANUALLY calculated with the vertical image amount
-
+        # num_slice=92,
+        # embryo_names=['191108plc1p1', '200109plc1p1', '200113plc1p2', '200113plc1p3', '200322plc1p2', '200323plc1p1',
+        #             '200326plc1p3', '200326plc1p4', '200122plc1lag1ip1', '200122plc1lag1ip2', '200117plc1pop1ip2',
+        #             '200117plc1pop1ip3'],
+        # max_times = [205, 205, 255, 195,195, 185, 220, 195, 195, 195, 140, 155],
+        # z_resolution=0.42,
+        # out_size=[256, 356, 214],  # todo: need to be MANUALLY calculated with the vertical image amount
         # =============================================
 
         xy_resolution=0.09,
