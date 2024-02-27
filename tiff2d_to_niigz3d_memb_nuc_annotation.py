@@ -197,6 +197,8 @@ def save_annotated_ace_nuc(para):
     tp_lineage = pd_lineage[pd_lineage["time"] == tp]
     tp_lineage.loc[:, "x"] = (tp_lineage["x"] * zoom_ratio[0]).astype(np.int16)
     tp_lineage.loc[:, "y"] = (np.floor(tp_lineage["y"] * zoom_ratio[1])).astype(np.int16)
+    # tp_lineage.loc[:, "z"] = np.floor(tp_lineage["z"] * (zoom_ratio[2] / dif_res)).astype(np.int16)
+
     tp_lineage.loc[:, "z"] = (out_size[2] - np.floor(tp_lineage["z"] * (zoom_ratio[2] / dif_res))).astype(np.int16)
 
     # !!!! x <--> y !!!!!!!
@@ -221,7 +223,7 @@ def save_annotated_ace_nuc(para):
 
 
 if __name__ == "__main__":
-    IS_CD_FILES=False
+    IS_CD_FILES=True
     if IS_CD_FILES:
         CD_folder = r"F:\packed membrane nucleus 3d niigz\CD FILES"
         nuc_files = sorted(glob.glob(os.path.join(CD_folder, "*.csv")))
@@ -247,19 +249,19 @@ if __name__ == "__main__":
         # ======================================
 
         # ====================================
-        # num_slice=68,
-        # embryo_names=['190311plc1mp1','190311plc1mp3'],
-        # max_times=[60,60],
-        # z_resolution=0.42,
-        # out_size=[256, 356, 160],  # todo: need to be MANUALLY calculated with the vertical image amount
+        num_slice=68,
+        embryo_names=['190311plc1mp1','190311plc1mp3'],
+        max_times=[60,60],
+        z_resolution=0.42,
+        out_size=[256, 356, 160],  # todo: need to be MANUALLY calculated with the vertical image amount
         # ======================================
 
         # ====================================
-        num_slice=68,
-        embryo_names=['191022plc1pop1ip1','191022plc1pop1ip2'],
-        max_times=[150,220],
-        z_resolution=0.42,
-        out_size=[256, 356, 160],  # todo: need to be MANUALLY calculated with the vertical image amount
+        # num_slice=68,
+        # embryo_names=['191022plc1pop1ip1','191022plc1pop1ip2'],
+        # max_times=[150,220],
+        # z_resolution=0.42,
+        # out_size=[256, 356, 160],  # todo: need to be MANUALLY calculated with the vertical image amount
         # ======================================
 
 
@@ -302,7 +304,7 @@ if __name__ == "__main__":
         raw_folder=r'E:\ProjectData\MembraneProject\AllRawData',
         target_folder=r"F:\packed membrane nucleus 3d niigz",
         save_nuc=False,
-        save_memb=True,
+        save_memb=False,
         is_ace_cd_file=IS_CD_FILES,
         name_dictionary=r"./necessary_files/name_dictionary.csv"
     )

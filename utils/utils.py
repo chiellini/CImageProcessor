@@ -56,9 +56,13 @@ def save_indexed_tif(file_name, data,segmented=True,obj_selection_index_list=[],
 
         if not is_seperate:
             tif_imgs = []
+            max_label_out=0
             for i_slice in range(num_slices):
                 label_map = data[..., i_slice]  # avoid 256 become 0
+
                 label_map_out = np.squeeze((label_map + 1).astype(np.uint8))
+                if max_label_out<np.max(label_map_out):
+                    max_label_out=np.max(label_map_out)
                 label_map_out[label_map == 0] = 0
                 tif_img = Image.fromarray(label_map_out, mode="P")
                 tif_img.putpalette(P)
@@ -68,7 +72,7 @@ def save_indexed_tif(file_name, data,segmented=True,obj_selection_index_list=[],
                 os.remove(tif_saving)
             # save the 1th slice image, treat others slices as appending
             tif_imgs[0].save(tif_saving, save_all=True, append_images=tif_imgs[1:])
-            return
+            return max_label_out
 
         number_dictionary_path = r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\GUIData\WebData_CMap_cell_label_v3\name_dictionary.csv'
         label_name_dict = pd.read_csv(number_dictionary_path, index_col=0).to_dict()['0']
@@ -83,7 +87,7 @@ def save_indexed_tif(file_name, data,segmented=True,obj_selection_index_list=[],
         tmp_label_0_cell_list=[]
         with open(map_txt_saving_path, 'w') as file:
             for key, value in mapping_dict.items():
-                file.write(f'{label_name_dict[key]}\n')
+                file.write('{}\n'.format(label_name_dict.get(key,'NOTCELL')))
                 if int(value[1]) == 0:
                     file.write(f'{int(key)}:{0}:{int(value[0])}\n')
                     tmp_label_0_cell_list.append([key,int(value[0])])
