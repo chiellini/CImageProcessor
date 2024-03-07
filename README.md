@@ -52,52 +52,7 @@ Pre-process the tiff images of membrane channel to NTFI {embryo_name}_{tp}.nii.g
 
 
 
-├── Input
-│   ├── EmbryoFolder1
-│   │   ├── File1.nii.gz
-│   │   ├── File2.nii.gz
-│   │   └── ...
-│   ├── EmbryoFolder2
-│   │   ├── File1.nii.gz
-│   │   ├── File2.nii.gz
-│   │   └── ...
-│
-├── Output
-│   ├── EmbryoFolder1
-│   │   ├── File1.tiff
-│   │   ├── File2.tiff
-│   │   └── ...
-│   │    
-│   ├── EmbryoFolder2
-│   │   ├── File1.tiff
-│   │   ├── File2.tiff
-│   │   └── ...  
-│   │   │  
-│   │   │   
-│   ├── tiffmaptxt
-│   │   ├── EmbryoFolder01
-│   │   │   ├── Embryo01_001_map.txt
-│   │   │   ├── Embryo01_002_map.txt
-│   │   │   └── ... 
-│   │   │  
-│   │   ├── EmbryoFolder02
-│   │   │   ├── Embryo02_001_map.txt
-│   │   │   ├── Embryo02_002_map.txt
-│   │   │   └── ...
-│   │   
-│   └── ...
-│
-├── Embryo01_render_indexed.txt
-├── Embryo02_render_indexed.txt
-│
-├── obj
-│   ├── objEmbryo1
-│   │   ├── objs
-│   │ 
-│   ├── objEmbryo2
-│   │   ├── objs
-│   │ 
-└── ...
+
 
    
 
