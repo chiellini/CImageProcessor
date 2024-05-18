@@ -11,9 +11,9 @@ Pre-process the tiff images of membrane channel to NTFI {embryo_name}_{tp}.nii.g
 * Like 3DMNS density map
 
 ## Transform 3D NTfTI MRT file *.nii.gz to 3D TIFF FILES
-* Run 3D_format_transformation.py
+* Open file "image2d3d_format_transformation.py"
 * Add all embryos in list of embryo_names.
-* Run nifti2tiff_seperated(seg_cell_root, tiff_root, segmented=True)
+* Run function "nifti2tiff_seperated(seg_cell_root, tiff_root, segmented=True)"
 * Seg_cell_root is input path and tiff_root is output path
 * Input path contains floders(samples) of nii.gz files
 * Output path contains .tiff floders and tiffmaptxt floders.
@@ -42,7 +42,9 @@ Pre-process the tiff images of membrane channel to NTFI {embryo_name}_{tp}.nii.g
 
 * ImageJ can continue generating obj after last time.
 
-
+## Combine the Seperated Objs into one and assign the cell Name
+* run file "generate_obj_from_seperated_objs.py"
+ 
 ## Obj view in ImageJ
    ![QQ截图20230823170900](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/bc13599d-6638-4140-be28-6cab9f517b0d)
 
