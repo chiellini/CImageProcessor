@@ -249,29 +249,29 @@ if __name__ == "__main__":
 
     config = dict(
         # ============================================
-        num_slice=30,
         embryo_names=[
             # 'ALR1RW10757',
-            'uncompressedEMB05'
+            # 'uncompressedEMB05',
+            'NucEmb7',
                       ],
         max_times=[
             # 270,
-            185,
-
+            # 185,
+            205
         ],
-        z_resolution=1,
         out_size=[
             # 210, 306, 30
-            184, 323, 30
-
+            # 184, 323, 30
+            512,712,92
         ],  # todo: need to be MANUALLY calculated with the vertical image amount
         # =================================================
-
-        xy_resolution=0.22,
+        num_slice=92,
+        z_resolution=0.42,
+        xy_resolution=0.18,
         # 94  *   0.43/0.09  *  356/712
         # out_size=[205, 285, 134],  # todo: need to be MANUALLY calculated with the vertical image amount
 
-        raw_folder=r'C:\Users\zelinli6\Downloads\Enhanced\EnhancedImages2EmbDuLab',
+        raw_folder=r'C:\Users\zelinli6\Downloads\EnhancedImages3EmbZhaoLab',
         target_folder=r"C:\Users\zelinli6\Downloads\Packed\Enhanced",
         save_nuc=True,
         save_memb=False,
