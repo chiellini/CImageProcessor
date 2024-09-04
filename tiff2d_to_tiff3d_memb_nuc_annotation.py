@@ -1,27 +1,28 @@
 import os
 import glob
-import pickle
+# import pickle
 import warnings
 import shutil
 
-from utils.data_io import nib_save
-from utils.generate_name_dictionary import add_number_dict
+# from utils.data_io import nib_save
+# from utils.generate_name_dictionary import add_number_dict
 
 warnings.filterwarnings("ignore")
 import numpy as np
 from PIL import Image
 # import nibabel as nib
 import pandas as pd
-from skimage.exposure import rescale_intensity
+# from skimage.exposure import rescale_intensity
 from skimage.morphology import ball
 
-import pandas
+# import pandas
 from tqdm import tqdm
 import multiprocessing as mp
 from skimage.transform import resize
 from scipy import ndimage
 
-from utils.utils import check_folder
+from utils.utils import save_indexed_tif
+# from utils.utils import check_folder
 from utils.data_structure import read_cd_file, read_txt_cd_file
 
 
@@ -149,7 +150,7 @@ def stack_nuc_slices(para):
     [raw_folder, save_folder, embryo_name, tp, out_size, num_slice, res] = para
 
     out_stack = []
-    save_file_name = "{}_{}_rawNuc.nii.gz".format(embryo_name, str(tp).zfill(3))
+    save_file_name = "{}_t{}.tif".format(embryo_name, str(tp))
     for i_slice in range(1, num_slice + 1):
         # raw_file_name = "{}deconp1_L1-t{}-p{}.tif".format(embryo_name[:-2], str(tp).zfill(3), str(i_slice).zfill(2))
         raw_file_name = "{}_L1-t{}-p{}.tif".format(embryo_name, str(tp).zfill(3), str(i_slice).zfill(2))
@@ -163,7 +164,8 @@ def stack_nuc_slices(para):
     # nib_stack.header["pixdim"] = [1.0, res[0], res[1], res[2], 0., 0., 0., 0.]
     save_file = os.path.join(save_folder, save_file_name)
     # check_folder(save_file)
-    nib_save(img_stack, save_file)
+    save_indexed_tif(save_file,img_stack,segmented=False)
+    # nib_save(img_stack, save_file)
 
 
 # ============================================
@@ -173,7 +175,7 @@ def stack_memb_slices(para):
     [raw_folder, save_folder, embryo_name, tp, out_size, num_slice, res] = para
 
     out_stack = []
-    save_file_name = "{}_{}_rawMemb.nii.gz".format(embryo_name, str(tp).zfill(3))
+    save_file_name = "{}_t{}.tif".format(embryo_name, str(tp))
     for i_slice in range(1, num_slice + 1):
         # r"D:\TemDownload\201112plc1_late_Lng\tifR\c elegans 3.lif_Series001_Lng_001_t00_z08_ch01.tif"
         # raw_file_name = "{}deconp1_L1-t{}-p{}.tif".format(embryo_name[:-2], str(tp).zfill(3), str(i_slice).zfill(2))
@@ -194,48 +196,50 @@ def stack_memb_slices(para):
     # nib_stack.header.set_xyzt_units(xyz=3, t=8)
     # nib_stack.header["pixdim"] = [1.0, res[0], res[1], res[2], 0., 0., 0., 0.]
     save_file = os.path.join(save_folder, save_file_name)
-    nib_save(img_stack, save_file)
+    save_indexed_tif(save_file,img_stack,segmented=False)
+    # nib_save(img_stack, save_file)
 
 
 # =============================================
 # save nucleus segmentation
 # =============================================
 def save_annotated_ace_nuc(para):
-    [embryo_name, name_dict, pd_lineage, tp, raw_size, out_size, out_res, dif_res, save_folder] = para
-
-    zoom_ratio = [y / x for x, y in zip(raw_size, out_size)]
-    tp_lineage = pd_lineage[pd_lineage["time"] == tp]
-    tp_lineage.loc[:, "x"] = (tp_lineage["x"] * zoom_ratio[0]).astype(np.int16)
-    tp_lineage.loc[:, "y"] = (np.floor(tp_lineage["y"] * zoom_ratio[1])).astype(np.int16)
-    # tp_lineage.loc[:, "z"] = np.floor(tp_lineage["z"] * (zoom_ratio[2] / dif_res)).astype(np.int16)
-
-    tp_lineage.loc[:, "z"] = (out_size[2] - np.floor(tp_lineage["z"] * (zoom_ratio[2] / dif_res))).astype(np.int16)
-    # tp_lineage.loc[:, "size"] = np.floor(tp_lineage["size"] * 2/3).astype(np.int16)
-
-
-    # !!!! x <--> y !!!!!!!
-    nuc_dict = dict(
-        zip(tp_lineage["cell"], zip(tp_lineage["y"].values, tp_lineage["x"].values, tp_lineage["z"].values)))
-    labels = [name_dict[name] for name in list(nuc_dict.keys())]
-    locs = list(nuc_dict.values())
-    out_seg = np.zeros(out_size, dtype=np.int16)
-    out_seg[tuple(zip(*locs))] = labels
-    nucleus_marker_footprint = ball(7 - int(int(tp) / 100))
-    out_seg = ndimage.morphology.grey_dilation(out_seg, footprint=nucleus_marker_footprint)
-    # out_seg=ndimage.
-
-    # out_seg=out_seg-1
-    save_file_name = "_".join([embryo_name, str(tp).zfill(3), "annotatedNuc.nii.gz"])
-    # nib_stack = nib.Nifti1Image(out_seg, np.eye(4))
-    # nib_stack.header.set_xyzt_units(xyz=3, t=8)
-    # nib_stack.header["pixdim"] = [1.0, out_res[0], out_res[1], out_res[2], 0., 0., 0., 0.]
-    save_file = os.path.join(save_folder, save_file_name)
-    # check_folder(save_file)
-    nib_save(out_seg, save_file)
+    pass
+    # [embryo_name, name_dict, pd_lineage, tp, raw_size, out_size, out_res, dif_res, save_folder] = para
+    #
+    # zoom_ratio = [y / x for x, y in zip(raw_size, out_size)]
+    # tp_lineage = pd_lineage[pd_lineage["time"] == tp]
+    # tp_lineage.loc[:, "x"] = (tp_lineage["x"] * zoom_ratio[0]).astype(np.int16)
+    # tp_lineage.loc[:, "y"] = (np.floor(tp_lineage["y"] * zoom_ratio[1])).astype(np.int16)
+    # # tp_lineage.loc[:, "z"] = np.floor(tp_lineage["z"] * (zoom_ratio[2] / dif_res)).astype(np.int16)
+    #
+    # tp_lineage.loc[:, "z"] = (out_size[2] - np.floor(tp_lineage["z"] * (zoom_ratio[2] / dif_res))).astype(np.int16)
+    # # tp_lineage.loc[:, "size"] = np.floor(tp_lineage["size"] * 2/3).astype(np.int16)
+    #
+    #
+    # # !!!! x <--> y !!!!!!!
+    # nuc_dict = dict(
+    #     zip(tp_lineage["cell"], zip(tp_lineage["y"].values, tp_lineage["x"].values, tp_lineage["z"].values)))
+    # labels = [name_dict[name] for name in list(nuc_dict.keys())]
+    # locs = list(nuc_dict.values())
+    # out_seg = np.zeros(out_size, dtype=np.int16)
+    # out_seg[tuple(zip(*locs))] = labels
+    # nucleus_marker_footprint = ball(7 - int(int(tp) / 100))
+    # out_seg = ndimage.morphology.grey_dilation(out_seg, footprint=nucleus_marker_footprint)
+    # # out_seg=ndimage.
+    #
+    # # out_seg=out_seg-1
+    # save_file_name = "_".join([embryo_name, str(tp).zfill(3), "annotatedNuc.nii.gz"])
+    # # nib_stack = nib.Nifti1Image(out_seg, np.eye(4))
+    # # nib_stack.header.set_xyzt_units(xyz=3, t=8)
+    # # nib_stack.header["pixdim"] = [1.0, out_res[0], out_res[1], out_res[2], 0., 0., 0., 0.]
+    # save_file = os.path.join(save_folder, save_file_name)
+    # # check_folder(save_file)
+    # nib_save(out_seg, save_file)
 
 
 if __name__ == "__main__":
-    IS_CD_FILES = True
+    IS_CD_FILES = False
     # if IS_CD_FILES:
     #     CD_folder = r"F:\packed membrane nucleus 3d niigz\CD FILES"
     #     nuc_files = sorted(glob.glob(os.path.join(CD_folder, "*.csv")))
@@ -244,144 +248,31 @@ if __name__ == "__main__":
     #         add_number_dict(nuc_file, max_time=1000)  # the max time for your data
 
     config = dict(
-        # # ==========================================================================================
-        # num_slice=90,
-        # embryo_names=['231229cnhis72p1'],
-        # max_times=[250],
-        # z_resolution=0.43,
-        # out_size=[256, 356, 224],  # todo: need to be MANUALLY calculated with the vertical image amount
-        # #===========================================================================================
-
-        # ====================================
-        # num_slice=94,
-        # embryo_names=['221017plc1p2RAWp1'],
-        # max_times=[240],
-        # z_resolution=0.42,
-        # out_size=[256, 356, 224],  # todo: need to be MANUALLY calculated with the vertical image amount
-        # ======================================
-
-        # ====================================
-        # num_slice=68,
-        # embryo_names=['190311plc1mp1','190311plc1mp3'],
-        # max_times=[60,60],
-        # z_resolution=0.42,
-        # out_size=[256, 356, 160],  # todo: need to be MANUALLY calculated with the vertical image amount
-        # ======================================
-
-        # ====================================
-        # num_slice=68,
-        # embryo_names=['191022plc1pop1ip1','191022plc1pop1ip2'],
-        # max_times=[150,220],
-        # z_resolution=0.42,
-        # out_size=[256, 356, 160],  # todo: need to be MANUALLY calculated with the vertical image amount
-        # ======================================
-
-        # =============================================
-        # num_slice=70,
-        # embryo_names=['170614plc1p1','170704plc1p1'],
-        # max_times=[150,240],
-        #
-        # z_resolution=0.43,
-        # out_size=[256, 356, 168],  # todo: need to be MANUALLY calculated with the vertical image amount
-        # ====================================================
-
-        # ========================================
-        # num_slice=68,
-        # embryo_names=[
-        #    '190314plc1p3', '181210plc1p3', '181210plc1p1', '181210plc1p2', '200309plc1p1', '200309plc1p2',
-        #    '200309plc1p3',
-        #    '200311plc1p1', '200311plc1p3', '200312plc1p2', '200314plc1p1', '200314plc1p2', '200314plc1p3',
-        #    '200315plc1p2',
-        #    '200315plc1p3', '200316plc1p1', '200316plc1p2', '200316plc1p3',
-        # ],
-        # max_times=[90, 150, 170, 210, 165, 160, 160, 160, 170, 165, 150, 155, 170, 160, 160, 160, 160, 170],
-        # z_resolution=0.42,
-        # out_size=[256, 356, 160],  # todo: need to be MANUALLY calculated with the vertical image amount
-        # =====================================================
-
-        # ============================================
-        # num_slice=68,
-        # embryo_names=['180913plc1p1',
-        #               '181211plc1p1',
-        #               '181211plc1p2',
-        #               '181211plc1p3',
-        #               '191003plc1p3',
-        #               '200312plc1p1',
-        #               '200312plc1p3',
-        #               '200315plc1p1'
-        #               ],
-        # max_times=[200,200,200,200,200,200,200,200],
-        # z_resolution=0.42,
-        # out_size=[256, 356, 160],  # todo: need to be MANUALLY calculated with the vertical image amount
-        # =================================================
-
-        # ================================================================
-        # num_slice=92,
-        # embryo_names=['191108plc1p1', '200109plc1p1', '200113plc1p2', '200113plc1p3', '200322plc1p2', '200323plc1p1',
-        #             '200326plc1p3', '200326plc1p4', '200122plc1lag1ip1', '200122plc1lag1ip2', '200117plc1pop1ip2',
-        #             '200117plc1pop1ip3'],
-        # max_times = [205, 205, 255, 195,195, 185, 220, 195, 195, 195, 140, 155],
-        # z_resolution=0.42,
-        # out_size=[256, 356, 214],  # todo: need to be MANUALLY calculated with the vertical image amount
-        # =============================================
-
-        # ============================================
-        # num_slice=68,
-        # embryo_names=['200710hmr1plc1p1',
-        #               '200710hmr1plc1p2',
-        #               '200710hmr1plc1p3'
-        #               ],
-        # max_times=[96,100,100],
-        # z_resolution=0.42,
-        # out_size=[256, 356, 160],  # todo: need to be MANUALLY calculated with the vertical image amount
-        # =================================================
-
-        # ============================================
-        # num_slice=30,
-        # embryo_names=[
-        #     'uncompressedEMB01',
-        #               # 'uncompressedEMB03',
-        #               # 'uncompressedEMB05',
-        #               # 'uncompressedEMB07',
-        #               # 'uncompressedEMB09',
-        #               ],
-        # max_times=[
-        #     10,
-        #     # 185,
-        #     # 185,
-        #     # 180,
-        #     # 195,
-        # ],
-        # z_resolution=1,
-        # out_size=[
-        #     187, 325, 135
-        #     # 306, 185, 135
-        #     # 184,323,135
-        #     # 304,133,135
-        #     # 325,183,135
-        #
-        # ],  # todo: need to be MANUALLY calculated with the vertical image amount
-        # =================================================
         # ============================================
         num_slice=30,
         embryo_names=[
-            'ALR1RW10757'
+            # 'ALR1RW10757',
+            'uncompressedEMB05'
                       ],
         max_times=[
+            # 270,
             185,
+
         ],
         z_resolution=1,
         out_size=[
-            210, 306, 136
+            # 210, 306, 30
+            184, 323, 30
 
         ],  # todo: need to be MANUALLY calculated with the vertical image amount
         # =================================================
+
         xy_resolution=0.22,
         # 94  *   0.43/0.09  *  356/712
         # out_size=[205, 285, 134],  # todo: need to be MANUALLY calculated with the vertical image amount
 
-        raw_folder=r'E:\ProjectData\MembraneProject\AllRawData',
-        target_folder=r"C:\Users\zelinli6\Downloads\Packed",
+        raw_folder=r'C:\Users\zelinli6\Downloads\Enhanced\EnhancedImages2EmbDuLab',
+        target_folder=r"C:\Users\zelinli6\Downloads\Packed\Enhanced",
         save_nuc=True,
         save_memb=False,
         is_ace_cd_file=IS_CD_FILES,

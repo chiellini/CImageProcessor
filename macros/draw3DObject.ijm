@@ -1,18 +1,16 @@
 
-root_tiff_input_path="E:/3Ddataset/output/"
-root_obj_output_path="E:/3Ddataset/obj/obj"
-
-//
+root_tiff_input_path="D:/project_tem/CTransformer\ visualization\ dataset/tif_to_merge"
+root_obj_output_path="D:/project_tem/CTransformer\ visualization\ dataset/obj_to_merge"
 //setBatchMode(true);
 //embryonames_list = newArray("Sample09", "Sample10", "Sample11", "Sample12", "Sample13", "Sample14", "Sample15");
 
-embryonames_list = newArray("Sample05");
+embryonames_list = newArray("191108plc1p1","200109plc1p1");
 
 
 for (idx =0;idx<embryonames_list.length;idx++){
 	//setBatchMode(true);
-	input_path=root_tiff_input_path+embryonames_list[idx]+"/";
-	render_label_path=root_tiff_input_path+embryonames_list[idx]+"_render_indexed.txt";
+	input_path=root_tiff_input_path+"/"+embryonames_list[idx]+"/";
+	render_label_path=root_tiff_input_path+"/"+embryonames_list[idx]+"_render_indexed.txt";
 	map_string = File.openAsString(render_label_path);
 	map_list = split(map_string, "\n");
 
@@ -21,7 +19,7 @@ for (idx =0;idx<embryonames_list.length;idx++){
 	for (i =0 ; i < thisembryoname_list.length; i++){
 		if (endsWith(thisembryoname_list[i], ".tif")) {
 
-			output_path=root_obj_output_path+embryonames_list[idx]+"/";
+			output_path=root_obj_output_path+"/"+embryonames_list[idx]+"/";
 			if (!File.exists(output_path)) {
     				File.makeDirectory(output_path);
     				print("Directory created.");

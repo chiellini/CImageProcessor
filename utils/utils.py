@@ -44,7 +44,7 @@ def save_indexed_png(fname, label_map, palette=P):
     im.putpalette(palette)
     im.save(fname, 'PNG')
 
-def save_indexed_tif(file_name, data,segmented=True,obj_selection_index_list=[],is_seperate=True):
+def save_indexed_tif(file_name, data,segmented=True,obj_selection_index_list=[],is_seperate=True,name_dictionary_path=None):
     """Save matrix data as indexed images which can be rendered by ImageJ"""
     # label_
     check_folder(file_name)
@@ -74,8 +74,9 @@ def save_indexed_tif(file_name, data,segmented=True,obj_selection_index_list=[],
             tif_imgs[0].save(tif_saving, save_all=True, append_images=tif_imgs[1:])
             return max_label_out
 
-        number_dictionary_path = r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\GUIData\WebData_CMap_cell_label_v3\name_dictionary.csv'
-        label_name_dict = pd.read_csv(number_dictionary_path, index_col=0).to_dict()['0']
+        assert name_dictionary_path is not None
+        # number_dictionary_path = r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\GUIData\WebData_CMap_cell_label_v3\name_dictionary.csv'
+        label_name_dict = pd.read_csv(name_dictionary_path, index_col=0).to_dict()['0']
 
         mapping_dict={}
         for cell_label in list(np.unique(data))[1:]:

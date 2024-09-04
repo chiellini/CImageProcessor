@@ -12,14 +12,17 @@ def read_map_file_as_dict(txt_file, max_middle_num):
         map_this[i] = {}
     for i in range(0, len(map_list), 2):
         cell_label, middle_num, middle_label = map_list[i + 1].split(':')
+        # print(cell_label, middle_num, middle_label)
         map_this[int(middle_num)][middle_label] = [cell_label, map_list[i]]
     return map_this
 
 
-def rename_objs(embryo_names, tps, max_middle_num, root, tiff_map_txt_path):
+def rename_objs(embryo_names, tps, max_middle_num, root, tiff_map_txt_path,file_suffix='_segCell'):
+    # file_suffix='_merged' # _segCell
     for idx, embryo_name in enumerate(embryo_names):
         for tp in range(1, tps[idx] + 1):
             map_path = os.path.join(tiff_map_txt_path, embryo_name, embryo_name + '_' + str(tp).zfill(3) + '_map.txt')
+            # print(map_path)
             map_dict = read_map_file_as_dict(map_path, max_middle_num)
             for middle_idx in range(0, max_middle_num + 1):
                 indexes_for_mtl = 0
@@ -27,11 +30,11 @@ def rename_objs(embryo_names, tps, max_middle_num, root, tiff_map_txt_path):
                 rename_order_list_for_mtl = []
                 # =============rename  obj ===================
                 obj_file_path = os.path.join(root, embryo_name,
-                                             embryo_name + '_' + str(tp).zfill(3) + '_segCell_' + str(
+                                             embryo_name + '_' + str(tp).zfill(3) + file_suffix+'_' + str(
                                                  middle_idx) + '.obj')
                 if os.path.exists(obj_file_path):
                     print('dealing with ' + embryo_name,
-                          embryo_name + '_' + str(tp).zfill(3) + '_segCell_' + str(middle_idx) + '.obj')
+                          embryo_name + '_' + str(tp).zfill(3) + file_suffix+'_' + str(middle_idx) + '.obj')
                     with open(obj_file_path) as f:
                         lines = f.readlines()
                     with open(obj_file_path, 'w') as f:
@@ -58,11 +61,11 @@ def rename_objs(embryo_names, tps, max_middle_num, root, tiff_map_txt_path):
                                 f.write(line)
                 # =============rename  mtl ===================
                 mtl_file_path = os.path.join(root, embryo_name,
-                                             embryo_name + '_' + str(tp).zfill(3) + '_segCell_' + str(
+                                             embryo_name + '_' + str(tp).zfill(3) + file_suffix+'_' + str(
                                                  middle_idx) + '.mtl')
                 if os.path.exists(mtl_file_path):
                     print('dealing with ' + embryo_name,
-                          embryo_name + '_' + str(tp).zfill(3) + '_segCell_' + str(middle_idx) + '.mtl')
+                          embryo_name + '_' + str(tp).zfill(3) + file_suffix+'_' + str(middle_idx) + '.mtl')
 
                     mtl_index_tmp = 0
                     with open(mtl_file_path) as f:
@@ -79,16 +82,17 @@ def rename_objs(embryo_names, tps, max_middle_num, root, tiff_map_txt_path):
                                 f.write(line)
 
 
-def combine_objs(embryo_names, tps, max_middle_num, root, target_root):
+def combine_objs(embryo_names, tps, max_middle_num, root, target_root,file_suffix = '_segCell'):
+    # file_suffix = '_merged'  # _segCell
     for idx, embryo_name in enumerate(embryo_names):
         for tp in range(1, tps[idx] + 1):
             obj_file_path_tmp = os.path.join(root, embryo_name,
-                                         embryo_name + '_' + str(tp).zfill(3) + '_segCell_1.obj')
+                                         embryo_name + '_' + str(tp).zfill(3) + file_suffix+'_1.obj')
 
             output_obj_path = os.path.join(target_root, embryo_name,
-                                           embryo_name + '_' + str(tp).zfill(3) + '_segCell.obj')
+                                           embryo_name + '_' + str(tp).zfill(3) + file_suffix+'.obj')
             output_mtl_path = os.path.join(target_root, embryo_name,
-                                           embryo_name + '_' + str(tp).zfill(3) + '_segCell.mtl')
+                                           embryo_name + '_' + str(tp).zfill(3) + file_suffix+'.mtl')
             check_folder(output_obj_path)
 
             vertex_offset = 0
@@ -97,10 +101,10 @@ def combine_objs(embryo_names, tps, max_middle_num, root, target_root):
             print('combining ',embryo_name,tp)
             with open(output_obj_path, 'w') as outfile:
                 outfile.write('# OBJ File\n')
-                outfile.write('mtllib {}_{}_segCell.mtl\n'.format(embryo_name, str(tp).zfill(3)))
+                outfile.write('mtllib {}_{}.mtl\n'.format(embryo_name, str(tp).zfill(3)+file_suffix))
                 for middle_idx in range(0, max_middle_num + 1):
                     obj_file_path = os.path.join(root, embryo_name,
-                                                 embryo_name + '_' + str(tp).zfill(3) + '_segCell_' + str(
+                                                 embryo_name + '_' + str(tp).zfill(3) + file_suffix+'_' + str(
                                                      middle_idx) + '.obj')
                     if os.path.exists(obj_file_path):
                         with open(obj_file_path) as infile:
@@ -123,7 +127,7 @@ def combine_objs(embryo_names, tps, max_middle_num, root, target_root):
                 outfile.write('\n')
                 for middle_idx in range(0, max_middle_num + 1):
                     mtl_file_path = os.path.join(root, embryo_name,
-                                                 embryo_name + '_' + str(tp).zfill(3) + '_segCell_' + str(
+                                                 embryo_name + '_' + str(tp).zfill(3) + file_suffix+'_' + str(
                                                      middle_idx) + '.mtl')
                     if os.path.exists(mtl_file_path):
                         with open(mtl_file_path) as infile:

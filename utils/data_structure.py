@@ -9,7 +9,7 @@ import pandas as pd
 from treelib import Tree, Node
 import io
 
-def read_old_cd(cd_file_path):
+def read_txt_cd_file(cd_file_path):
     df_nuc=pd.DataFrame(columns=['cell','time','x','y','z'])
     with io.open(cd_file_path, mode="r", encoding="utf-8") as f:
         # next(f)
@@ -17,17 +17,21 @@ def read_old_cd(cd_file_path):
         for line in f:
             info_list = line.split()
             # print(info_list)
-            df_nuc.loc[len(df_nuc)]=[info_list[0],info_list[1],info_list[4],info_list[3],info_list[2]]
+            # one cd file
+            # df_nuc.loc[len(df_nuc)]=[info_list[0],info_list[1],info_list[4],info_list[3],info_list[2]]
+            # the cd file from du zhuo lab open source
+            df_nuc.loc[len(df_nuc)]=[info_list[1],info_list[0],info_list[3],info_list[2],info_list[4]]
+
     df_nuc = df_nuc.astype({"x":float, "y":float, "z":float, "time":int})
     return df_nuc
 
 def read_cd_file(cd_file_path):
     df_nuc_tmp = pd.read_csv(cd_file_path)
-    df_nuc=df_nuc_tmp[['cell','time','x','y','z']]
-    df_nuc = df_nuc.astype({"x": float, "y": float, "z": float, "time": int})
+    df_nuc=df_nuc_tmp[['cell','time','x','y','z','size']]
+    df_nuc = df_nuc.astype({"x": float, "y": float, "z": float, "time": int,'size':int})
     return df_nuc
 
-def read_new_cd(cd_file):
+def read_new_generated_cd_file(cd_file):
     df_nuc = pd.read_csv(cd_file, lineterminator="\n")
     df_nuc[["cell", "time"]] = df_nuc["Cell & Time"].str.split(":", expand=True)
     df_nuc = df_nuc.rename(columns={"X (Pixel)":"x", "Y (Pixel)":"y", "Z (Pixel)\r":"z"})
@@ -63,7 +67,7 @@ def construct_celltree(nucleus_file, max_time):
     cell_tree.create_node('MS', 'MS', parent='EMS')
 
     # Read the name excel and construct the tree with complete segCell
-    df_time = read_new_cd(nucleus_file)
+    df_time = read_new_generated_cd_file(nucleus_file)
 
     # read and combine all names from different acetrees
     ## Get cell number
@@ -78,7 +82,7 @@ def construct_celltree(nucleus_file, max_time):
     # =====================================
     cell_in_dictionary = list(number_dictionary.keys())
 
-    ace_pd = read_new_cd(os.path.join(nucleus_file))
+    ace_pd = read_new_generated_cd_file(os.path.join(nucleus_file))
     ace_pd = ace_pd[ace_pd.time <= max_time]
     cell_list = list(ace_pd.cell.unique())
     add_cell_list = list(set(cell_list) - set(cell_in_dictionary))
