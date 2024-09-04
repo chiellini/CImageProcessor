@@ -1,9 +1,9 @@
 # ImagesPrepocessor
 A lot of biomedical image processing python scripts, like pre-process the tiff images of membrane channel to NTFI {embryo_name}_{tp}.nii.gz (medical 3D MRT image).
 ## The following Papers/Projects Used this Repository, and Please Cite Them if You Use Our Tools and Data
-* Paper Tile: Cell lineage-resolved embryonic morphological map reveals novel signaling regulating cell fate and size asymmetry; Code Link: https://github.com/cao13jf/CMap and https://github.com/chiellini/GUIData ; Related Data Link: https://figshare.com/s/fc9b67e91a38eea86bee .
+* Paper Tile: Cell lineage-resolved embryonic morphological map reveals novel signaling regulating cell fate and size asymmetry; Website: https://bcc.ee.cityu.edu.hk/cmos/index.html ; Code Link: https://github.com/cao13jf/CMap and https://github.com/chiellini/GUIData ; Related Data Link: https://figshare.com/s/fc9b67e91a38eea86bee .
 * Paper Title: Deep Learning-based Enhancement of Fluorescence Labeling for Accurate Cell Lineage Tracing During Embryogenesis; Code Link: https://github.com/plcx/NucApp-develop ; Related Data Link: https://doi.org/10.6084/m9.figshare.26778475.v1 .
-* Paper Title: EmbSAM: Cell boundary localization and Segment Anything Model for 3D fast-growing embryos; Code Link: https://github.com/CunminZhao/EmbSAM; Related Data Link: https://portland-my.sharepoint.com/:f:/g/personal/zelinli6-c_my_cityu_edu_hk/Epj5LhqViNZCmNtmRZrE2D8BvvGTr09Jg9u9aFBstL-3cg .
+* Paper Title: EmbSAM: Cell boundary localization and Segment Anything Model for 3D fast-growing embryos; Website: https://bcc.ee.cityu.edu.hk/cmos/embsam/ ; Code Link: https://github.com/CunminZhao/EmbSAM; Related Data Link: https://portland-my.sharepoint.com/:f:/g/personal/zelinli6-c_my_cityu_edu_hk/Epj5LhqViNZCmNtmRZrE2D8BvvGTr09Jg9u9aFBstL-3cg .
 ## Compact the 2D tiff image to 3D NTFT MRT file *.nii.gz.
 * Function **stack_memb_slices** in file **compose_slice.py**
     * Using skimage.transform.resize: spline interpolation (z axis)
