@@ -55,7 +55,8 @@ A lot of biomedical image processing python scripts, like pre-process the tiff i
    ![QQ截图20230824115042](https://github.com/chiellini/ImagesPrepocessor/assets/52396207/2b5bbaef-bcb9-4b14-9b93-7f3af6e02816)
 
 
-
+# CITATION
+Guan, G., Li, Z., Ma, Y. et al. Cell lineage-resolved embryonic morphological map reveals signaling associated with cell fate and size asymmetry. Nat Commun 16, 3700 (2025). https://doi.org/10.1038/s41467-025-58878-0
 
 
 
