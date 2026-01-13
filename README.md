@@ -1,9 +1,19 @@
 # ImagesPrepocessor
 A lot of biomedical image processing python scripts, like pre-process the tiff images of membrane channel to NTFI {embryo_name}_{tp}.nii.gz (medical 3D MRT image).
 ## The following Papers/Projects Used this Repository, and Please Cite Them if You Use Our Tools and Data
-* Paper Tile: Cell lineage-resolved embryonic morphological map reveals novel signaling regulating cell fate and size asymmetry; Website: https://bcc.ee.cityu.edu.hk/cmos/index.html ; Code Link: https://github.com/cao13jf/CMap and https://github.com/chiellini/GUIData ; Related Data Link: https://figshare.com/s/fc9b67e91a38eea86bee .
-* Paper Title: Deep Learning-based Enhancement of Fluorescence Labeling for Accurate Cell Lineage Tracing During Embryogenesis; Code Link: https://github.com/plcx/NucApp-develop ; Related Data Link: https://doi.org/10.6084/m9.figshare.26778475.v1 .
-* Paper Title: EmbSAM: Cell boundary localization and Segment Anything Model for 3D fast-growing embryos; Website: https://bcc.ee.cityu.edu.hk/cmos/embsam/ ; Code Link: https://github.com/CunminZhao/EmbSAM; Related Data Link: https://portland-my.sharepoint.com/:f:/g/personal/zelinli6-c_my_cityu_edu_hk/Epj5LhqViNZCmNtmRZrE2D8BvvGTr09Jg9u9aFBstL-3cg .
+* Paper Tile: Cell lineage-resolved embryonic morphological map reveals novel signaling regulating cell fate and size asymmetry;
+   * Citation: Guan, G., Li, Z., Ma, Y. et al. Cell lineage-resolved embryonic morphological map reveals signaling associated with cell fate and size asymmetry. Nat Commun 16, 3700 (2025). https://doi.org/10.1038/s41467-025-58878-0
+   * Website: https://bcc.ee.cityu.edu.hk/cmos/index.html ;
+   * Code Link: https://github.com/cao13jf/CMap and https://github.com/chiellini/GUIData ;
+   * Related Data Link: https://figshare.com/s/fc9b67e91a38eea86bee .
+* Paper Title: Deep Learning-based Enhancement of Fluorescence Labeling for Accurate Cell Lineage Tracing During Embryogenesis;
+   * Zelin Li, Dongying Xie, Yiming Ma, Cunmin Zhao, Sicheng You, Hong Yan, Zhongying Zhao, Deep learning-based enhancement of fluorescence labeling for accurate cell lineage tracing during embryogenesis, Bioinformatics, Volume 40, Issue 11, November 2024, btae626, https://doi.org/10.1093/bioinformatics/btae626
+   * Code Link: https://github.com/plcx/NucApp-develop ;
+   * Related Data Link: https://doi.org/10.6084/m9.figshare.26778475.v1 .
+* Paper Title: EmbSAM: Cell boundary localization and Segment Anything Model for 3D fast-growing embryos;
+   * Zhao C, Li Z, Zhang P, Chen Y, Ye P, Wong MK, Chan LY, Yan H, Tang C, Guan G, Zhao Z. EmbSAM: Cell boundary localization and Segment Anything Model for fast images of developing embryos. bioRxiv. 2024 Sep 13:2024-09.
+   * Website: https://bcc.ee.cityu.edu.hk/cmos/embsam/ ; Code Link: https://github.com/CunminZhao/EmbSAM;
+   * Related Data Link: https://portland-my.sharepoint.com/:f:/g/personal/zelinli6-c_my_cityu_edu_hk/Epj5LhqViNZCmNtmRZrE2D8BvvGTr09Jg9u9aFBstL-3cg .
 ## Compact the 2D tiff image to 3D NTFT MRT file *.nii.gz.
 * Function **stack_memb_slices** in file **compose_slice.py**
     * Using skimage.transform.resize: spline interpolation (z axis)
