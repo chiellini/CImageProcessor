@@ -1,9 +1,8 @@
 
-root_input_path="C:/Users/zelinli6/OneDrive\ -\ City University\ of\ Hong Kong\ -\ Student/Documents/06paper\ TUNETr\ TMI\ LSA\ NC/Figures/Figure 1"
-root_obj_output_path="C:/Users/zelinli6/OneDrive\ -\ City University\ of\ Hong Kong\ -\ Student/Documents/06paper\ TUNETr\ TMI\ LSA\ NC/Figures/Figure 1/objs"
 
-root_tiff_input_path="C:/Users/zelinli6/OneDrive\ -\ City University\ of\ Hong Kong\ -\ Student/Documents/06paper\ TUNETr\ TMI\ LSA\ NC/Figures/Figure 1/tiff"
-
+root_input_path="F:/CMap_paper/Figures/Figure\ 6\ major\ r1"
+root_tiff_input_path="F:/CMap_paper/Figures/Figure\ 6\ major\ r1/tiff_107"
+root_obj_output_path="F:/CMap_paper/Figures/Figure\ 6\ major\ r1/obj_to_merge_107"
 
 //setBatchMode(true);
 //input_path=root_tiff_input_path+"/"+embryonames_list[idx]+"/";

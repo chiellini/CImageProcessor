@@ -111,7 +111,7 @@ def save_indexed_tif(file_name, data,segmented=True,obj_selection_index_list=[],
                 tif_img = Image.fromarray(label_map_out, mode="P")
                 tif_img.putpalette(P)
                 tif_imgs.append(tif_img)
-            tif_saving = file_name.split('.')[0] + '_{}.tif'.format(str(0))
+            tif_saving = file_name.split('.')[0] + '_{}.tif'.format(str(0).zfill(3))
             if os.path.isfile(tif_saving):
                 os.remove(tif_saving)
             # save the 1th slice image, treat others slices as appending
@@ -120,7 +120,7 @@ def save_indexed_tif(file_name, data,segmented=True,obj_selection_index_list=[],
         seperate_mask_tmp=((data+1)/256).astype(np.uint8)+1
         seperate_mask_tmp[data==0]=0
         # seperate_mask_list={}
-        for seperate_idx in list(np.unique(seperate_mask_tmp)[1:]):
+        for seperate_idx in sorted(list(np.unique(seperate_mask_tmp)[1:])):
             seperate_mask_this=(seperate_mask_tmp!=seperate_idx)
             # print(seperate_idx,np.unique(seperate_mask_this,return_counts=True),len(np.unique(seperate_mask_this)))
             data_this=data.copy()
@@ -149,7 +149,7 @@ def save_indexed_tif(file_name, data,segmented=True,obj_selection_index_list=[],
                 #
                 # print('image data',np.unique(np.asarray(tif_img))[0:])
                 tif_imgs.append(tif_img)
-            tif_saving=file_name.split('.')[0]+'_{}.tif'.format(str(seperate_idx))
+            tif_saving=file_name.split('.')[0]+'_{}.tif'.format(str(seperate_idx).zfill(3))
             if os.path.isfile(tif_saving):
                 os.remove(tif_saving)
 

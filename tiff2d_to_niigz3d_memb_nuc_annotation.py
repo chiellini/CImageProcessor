@@ -189,7 +189,7 @@ def stack_memb_slices(para):
     # v_min, v_max = np.percentile(img_stack, (0.2, 99.9))  # erase the outrange grayscale
     # img_stack = rescale_intensity(img_stack, in_range=(v_min, v_max), out_range=(0, 255.0))
     # cut xy, interpolate z
-    img_stack = resize(image=img_stack, output_shape=out_size, preserve_range=True, order=1).astype(np.int16)
+    img_stack = resize(image=img_stack, output_shape=out_size, preserve_range=True, order=0).astype(np.int16)
     # nib_stack = nib.Nifti1Image(img_stack, np.eye(4))
     # nib_stack.header.set_xyzt_units(xyz=3, t=8)
     # nib_stack.header["pixdim"] = [1.0, res[0], res[1], res[2], 0., 0., 0., 0.]
@@ -235,7 +235,7 @@ def save_annotated_ace_nuc(para):
 
 
 if __name__ == "__main__":
-    IS_CD_FILES = True
+    IS_CD_FILES = False
     # if IS_CD_FILES:
     #     CD_folder = r"F:\packed membrane nucleus 3d niigz\CD FILES"
     #     nuc_files = sorted(glob.glob(os.path.join(CD_folder, "*.csv")))
@@ -244,6 +244,14 @@ if __name__ == "__main__":
     #         add_number_dict(nuc_file, max_time=1000)  # the max time for your data
 
     config = dict(
+        # ==========================================================================================
+        num_slice=94,
+        embryo_names=['221017plc1p2RAWp1'],
+        max_times=[240],
+        z_resolution=0.42,
+        out_size=[256, 356, 224],  # todo: need to be MANUALLY calculated with the vertical image amount
+        # ===========================================================================================
+
         # # ==========================================================================================
         # num_slice=90,
         # embryo_names=['231229cnhis72p1'],
@@ -363,29 +371,30 @@ if __name__ == "__main__":
         # ],  # todo: need to be MANUALLY calculated with the vertical image amount
         # =================================================
         # ============================================
-        num_slice=30,
-        embryo_names=[
-            'ALR1RW10757'
-                      ],
-        max_times=[
-            185,
-        ],
-        z_resolution=1,
-        out_size=[
-            210, 306, 136
-
-        ],  # todo: need to be MANUALLY calculated with the vertical image amount
+        # num_slice=30,
+        # embryo_names=[
+        #     'ALR1RW10757'
+        #               ],
+        # max_times=[
+        #     185,
+        # ],
+        # z_resolution=1,
+        # out_size=[
+        #     210, 306, 136
+        #
+        # ],
+        # todo: need to be MANUALLY calculated with the vertical image amount
         # =================================================
-        xy_resolution=0.22,
+        xy_resolution=0.09,
         # 94  *   0.43/0.09  *  356/712
         # out_size=[205, 285, 134],  # todo: need to be MANUALLY calculated with the vertical image amount
 
-        raw_folder=r'E:\ProjectData\MembraneProject\AllRawData',
-        target_folder=r"C:\Users\zelinli6\Downloads\Packed",
-        save_nuc=True,
-        save_memb=False,
+        raw_folder=r'E:\ProjectData\MembraneProject\AllRawDataBeforeDeconv',
+        target_folder=r"F:\packed membrane nucleus 3d niigz",
+        save_nuc=False,
+        save_memb=True,
         is_ace_cd_file=IS_CD_FILES,
-        name_dictionary=r"./necessary_files/name_dictionary.csv"
+        name_dictionary=r"./necessary_files/name_dictionary_cmap.csv"
     )
 
     combine_slices(config)

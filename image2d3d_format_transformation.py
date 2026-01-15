@@ -6,10 +6,11 @@ import numpy as np
 
 from scipy.ndimage.morphology import binary_closing
 from skimage.transform import resize, rescale
+from tifffile import imwrite
 
 # ------user's packages------
 from utils.utils import save_indexed_tif, scale2index
-from utils.data_io import nib_save, nib_load
+from utils.data_io import nib_save, nib_load, check_folder
 
 
 def tiff2nifti(root, target):
@@ -24,7 +25,7 @@ def tiff2nifti(root, target):
 
 
 def nifti2tiff_seperated(root, target, segmented, name_dictionary_path=None):
-    nifti_file_paths = glob.glob(os.path.join(root, '*.nii.gz'))
+    nifti_file_paths = sorted(glob.glob(os.path.join(root, '*.nii.gz')))
     obj_selection_index_list = []
     saving_obj_selection_index_list = os.path.join(os.path.dirname(target), "{}_render_indexed.txt".format(
         os.path.basename(target).split('.')[0]))
@@ -57,16 +58,18 @@ def nifti2tiff_seperated(root, target, segmented, name_dictionary_path=None):
         os.path.basename(target).split('.')[0]))
 
     if segmented:
-        # print(saving_obj_selection_index_list, len(obj_selection_index_list))
-        assert len([name for name in os.listdir(target)]) == len(obj_selection_index_list)
+        print(saving_obj_selection_index_list, len(obj_selection_index_list))
+        print(target,len(os.listdir(target)))
         with open(saving_obj_selection_index_list, "w") as f:
             # Write each string to a new line in the file
             for string in obj_selection_index_list:
                 f.write(string + "\n")
+        assert len(os.listdir(target)) == len(obj_selection_index_list)
+
 
 
 def nifti2tiff(root, target, segmented):
-    nifti_file_paths = glob.glob(os.path.join(root, '*.nii.gz'))
+    nifti_file_paths = sorted(glob.glob(os.path.join(root, '*.nii.gz')))
     obj_selection_index_list = []
     saving_obj_selection_index_list = os.path.join(os.path.dirname(target), "{}_render_indexed.txt".format(
         os.path.basename(target).split('.')[0]))
@@ -131,8 +134,42 @@ def nift2npy_3type(root, target):
         print('membrane', np.unique(nifti_file_arr_membrane, return_counts=True))
 
 
+def nift_2_4dtiff(root, target, embryo_names_tps_dict,img_type):
+
+    if img_type == 1:
+        suffix1='RawMemb'
+        suffix2='rawMemb.nii.gz'
+        suffix3='Membrane_image.tif'
+    elif img_type == 2:
+        suffix1='RawNuc'
+        suffix2='rawNuc.nii.gz'
+        suffix3='Nucleus_image.tif'
+    elif img_type == 3:
+        suffix1='AnnotatedNuc'
+        suffix2='annotatedNuc.nii.gz'
+        suffix3='Nucleus_segmentation.tif'
+
+    for embryo_name, tps in embryo_names_tps_dict.items():
+        time_series_3d_list=[]
+        for tp_this in tps:
+            niigz_path=os.path.join(root,embryo_name,suffix1,embryo_name+'_'+str(tp_this).zfill(3)+'_'+suffix2)
+            array_this=nib_load(niigz_path).transpose([2,1,0])
+            time_series_3d_list.append(array_this)
+        this_4d_tiff=np.stack(time_series_3d_list,axis=0).astype(np.int16)
+        saving_path_this=os.path.join(target,embryo_name,suffix3)
+        check_folder(saving_path_this)
+        imwrite(saving_path_this,this_4d_tiff,imagej=True)
+
+
+
 if __name__ == "__main__":
     print('3d format transforming')
+    # --------------transform 3d nitf to 3d tiff----------------
+    # embryos_tps = {'200113plc1p2': [90, 123, 132, 166, 178, 185], '200109plc1p1': [78, 114, 123, 157, 172, 181]}
+    # nift_2_4dtiff(
+    #     r'F:\packed membrane nucleus 3d niigz',
+    #     r'D:\Software\BCOMS2\CMapEva\Input', embryos_tps, 3)
+
     # ---------------transform tissue to obj to draw------------------
     # root_tmp = r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\MembraneProjectData\CMapEvaluationData\Tissue\niigz'
     # label = 4
@@ -146,8 +183,8 @@ if __name__ == "__main__":
     #     embryo_name), arr)
 
     # nifti2tiff(
-    #     root=r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\Documents\06paper TUNETr TMI LSA NC\middle materials\figure3_demonstration',
-    #     target=r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\Documents\06paper TUNETr TMI LSA NC\middle materials\figure3_demonstration\tiff',
+    #     root=r'F:\CMap_paper\Figures\Figure 6 major r1\niigz',
+    #     target=r'F:\CMap_paper\Figures\Figure 6 major r1\tiff',
     #     segmented=True)
 
     # -----------------groundtruth nii.gz to tiff--------------------
@@ -174,35 +211,51 @@ if __name__ == "__main__":
     #
     # --------------raw niigz to tiff -----------------------------
     # nifti2tiff(
-    #     root=r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\Documents\10 nucleus tracing enhancement\Figure1',
-    #     target=r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\Documents\10 nucleus tracing enhancement\Figure1\3DTIFFForPlotting',
+    #     root=r'F:\packed membrane nucleus 3d niigz\221017plc1p2RAWp1\RawMemb',
+    #     target=r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\Temporary Sharing\MTBC Evaluation\raw evalution image\tiff_221017xx',
     #     segmented=False)
 
-    # nifti2tiff(
-    #     root=r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\Documents\06paper TUNETr TMI LSA NC\Figures\Figure 1\niigz',
-    #     target=r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\Documents\06paper TUNETr TMI LSA NC\Figures\Figure 1\tiff',
-    #     segmented=True)
+    # nifti2tiff_seperated(
+    #     root=r'F:\CMap_paper\Figures\Figure 6 major r1\niigz_107',
+    #     target=r'F:\CMap_paper\Figures\Figure 6 major r1\tiff_107',
+    #     segmented=True,
+    #     name_dictionary_path=r'F:\CMap_paper\Figures\Figure 6 major r1\name_dictionary.csv'
+    # )
+
+    # =============================== ctransformer data niigz to tiff ===========================
+    # embryo_names = ['200113plc1p2']
+    # root = r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\Temporary Sharing\4DSWIN2023XXX'
+    # target = r'F:\CTransformer_data\obj_visualization\seperated_tif'
+    # for embryo_name in embryo_names:
+    #     seg_cell_root = os.path.join(root, embryo_name, 'ApoptoticSegCell')
+    #     tiff_root = os.path.join(target, embryo_name)
+    #     nifti2tiff_seperated(seg_cell_root, tiff_root, segmented=True,name_dictionary_path=r'./necessary_files/name_dictionary.csv')
+    # =============================== ctransformer data niigz to tiff ===========================
 
     # # ============================ niigz to tiff ============================
-    embryo_names = ['191108plc1p1', '200109plc1p1']
-    root = r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\Documents\06paper TUNETr TMI LSA NC\TUNETr dataset\CTransformer embryos segmentation'
-    target = r'D:\project_tem\CTransformer visualization dataset\tif_to_merge'
-    for embryo_name in embryo_names:
-        seg_cell_root = os.path.join(root, embryo_name, 'SegCell')
-        tiff_root = os.path.join(target, embryo_name)
-        nifti2tiff_seperated(seg_cell_root, tiff_root, segmented=True,
-                             name_dictionary_path=r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\Documents\06paper TUNETr TMI LSA NC\Tables\name_dictionary.csv')
+    # embryo_names = ['191108plc1p1', '200109plc1p1']
+    # root = r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\Documents\06paper TUNETr TMI LSA NC\TUNETr dataset\CTransformer embryos segmentation'
+    # target = r'D:\project_tem\CTransformer visualization dataset\tif_to_merge'
+    # for embryo_name in embryo_names:
+    #     seg_cell_root = os.path.join(root, embryo_name, 'SegCell')
+    #     tiff_root = os.path.join(target, embryo_name)
+    #     nifti2tiff_seperated(seg_cell_root, tiff_root, segmented=True,
+    #                          name_dictionary_path=r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\Documents\06paper TUNETr TMI LSA NC\Tables\name_dictionary.csv')
     # # ======================================================================
 
     # # ============================ niigz to tiff ============================
-    # embryo_names = ['200113plc1p2']
-    # root = r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\Documents\08paper zhaoke paper'
-    # target = r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\Documents\08paper zhaoke paper\migration3d\tiff_to_merge'
-    # for embryo_name in embryo_names:
-    #     seg_cell_root = os.path.join(root, embryo_name)
-    #     tiff_root = os.path.join(target, embryo_name)
-    #     nifti2tiff_seperated(seg_cell_root, tiff_root, segmented=True,
-    #                          name_dictionary_path=r'./necessary_files/name_dictionary_TUNETr.csv')
+    embryo_names = ['Sample05', 'Sample06', 'Sample07', 'Sample08', 'Sample09', 'Sample10', 'Sample11', 'Sample12', 'Sample13',   'Sample14', 'Sample15', 'Sample16', 'Sample17', 'Sample18', 'Sample19', 'Sample20']
+    # embryo_names = ['compress1','Compressed2','Uncompressed1','Uncompressed2']
+    # embryo_names = ['Emb6', 'Emb7', 'Emb8', 'Emb9']
+    root = r'F:\temp\Dataset'
+    target = r'F:\temp\tif\tiff_to_merge'
+    for embryo_name in embryo_names:
+        seg_cell_root = os.path.join(root, embryo_name,'SegCell')
+        tiff_root = os.path.join(target, embryo_name)
+        if not os.path.exists(tiff_root):
+            os.makedirs(tiff_root)
+        nifti2tiff_seperated(seg_cell_root, tiff_root, segmented=True,
+                             name_dictionary_path=r'F:\temp\Dataset\name_dictionary.csv')
     # # ======================================================================
 
     # ============================ niigz to tiff ============================

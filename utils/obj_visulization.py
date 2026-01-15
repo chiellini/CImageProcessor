@@ -22,6 +22,8 @@ def rename_objs(embryo_names, tps, max_middle_num, root, tiff_map_txt_path,file_
     for idx, embryo_name in enumerate(embryo_names):
         for tp in range(1, tps[idx] + 1):
             map_path = os.path.join(tiff_map_txt_path, embryo_name, embryo_name + '_' + str(tp).zfill(3) + '_map.txt')
+            if not os.path.exists(map_path):
+                continue
             # print(map_path)
             map_dict = read_map_file_as_dict(map_path, max_middle_num)
             for middle_idx in range(0, max_middle_num + 1):
@@ -88,6 +90,8 @@ def combine_objs(embryo_names, tps, max_middle_num, root, target_root,file_suffi
         for tp in range(1, tps[idx] + 1):
             obj_file_path_tmp = os.path.join(root, embryo_name,
                                          embryo_name + '_' + str(tp).zfill(3) + file_suffix+'_1.obj')
+            if not os.path.exists(obj_file_path_tmp):
+                continue
 
             output_obj_path = os.path.join(target_root, embryo_name,
                                            embryo_name + '_' + str(tp).zfill(3) + file_suffix+'.obj')

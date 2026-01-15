@@ -252,7 +252,7 @@ if __name__ == "__main__":
         embryo_names=[
             # 'ALR1RW10757',
             # 'uncompressedEMB05',
-            'NucEmb7',
+            '191108plc1p1',
                       ],
         max_times=[
             # 270,
@@ -267,11 +267,11 @@ if __name__ == "__main__":
         # =================================================
         num_slice=92,
         z_resolution=0.42,
-        xy_resolution=0.18,
+        xy_resolution=0.09,
         # 94  *   0.43/0.09  *  356/712
         # out_size=[205, 285, 134],  # todo: need to be MANUALLY calculated with the vertical image amount
 
-        raw_folder=r'C:\Users\zelinli6\Downloads\EnhancedImages3EmbZhaoLab',
+        raw_folder=r'C:\Users\zelinli6\Downloads\Enhanced',
         target_folder=r"C:\Users\zelinli6\Downloads\Packed\Enhanced",
         save_nuc=True,
         save_memb=False,

@@ -1,10 +1,13 @@
 
-root_tiff_input_path="D:/project_tem/CTransformer\ visualization\ dataset/tif_to_merge"
-root_obj_output_path="D:/project_tem/CTransformer\ visualization\ dataset/obj_to_merge"
+root_tiff_input_path="F:/temp/tif/tiff_to_merge"
+root_obj_output_path="F:/temp/tif/obj_to_merge"
+
 //setBatchMode(true);
 //embryonames_list = newArray("Sample09", "Sample10", "Sample11", "Sample12", "Sample13", "Sample14", "Sample15");
 
-embryonames_list = newArray("191108plc1p1","200109plc1p1");
+//embryonames_list = newArray("compress1","Compressed2","Uncompressed1","Uncompressed2");
+
+embryonames_list = newArray("Sample05","Sample06","Sample07","Sample08","Sample09","Sample10","Sample11","Sample12","Sample13","Sample14","Sample15","Sample16","Sample17","Sample18","Sample19","Sample20");
 
 
 for (idx =0;idx<embryonames_list.length;idx++){
@@ -26,10 +29,10 @@ for (idx =0;idx<embryonames_list.length;idx++){
 			} else {
     				print(" ");
 			}
-			max_index=map_list[i];
-			write("generating "+embryonames_list[idx]+" "+i+" "+max_index);
+			map_index=map_list[i];
+			write("generating "+embryonames_list[idx]+" "+i+" "+map_index);
 
-			action(input_path, output_path, thisembryoname_list[i], i,max_index);
+			action(input_path, output_path, thisembryoname_list[i], i,map_index);
 
 			//setBatchMode(false);
     		}
@@ -42,7 +45,7 @@ for (idx =0;idx<embryonames_list.length;idx++){
 }
 
 
-function action(input_path, output_path, filename, i,max_index) {
+function action(input_path, output_path, filename, i,map_index) {
 	print("Processing: " + filename);
 	name_split = split(filename, ".");
 	base_name = name_split[0];
@@ -60,7 +63,7 @@ function action(input_path, output_path, filename, i,max_index) {
 		run("Show Color Surfaces", "use=[Create New 3D Viewer] resampling=1 index=0 radius=1");
 		call("ij3d.ImageJ3DViewer.select", "ImageJ 3D Viewer");
 
-		call("ij3d.ImageJ3DViewer.select", "Smoothed image for colour index: "+max_index);
+		call("ij3d.ImageJ3DViewer.select", "Smoothed image for colour index: "+map_index);
 		call("ij3d.ImageJ3DViewer.exportContent", "WaveFront", saveing_obj_path);
 		//call("ij3d.ImageJ3DViewer.exportContent", "STL ASCII",  output_path + base_name + ".stl");
 		//call("ij3d.ImageJ3DViewer.snapshot", "512", "512");	

@@ -119,19 +119,48 @@ import numpy as np
 
 
 # =================================================================================================
-import pandas as pd
-cd_file_this=r'E:\ProjectData\MembraneProject\AllRawData\200710hmr1plc1p3\aceNuc\CD200710hmr1plc1p3.csv'
-df_cd_file=pd.read_csv(cd_file_this)
-max_time=max(df_cd_file['time'])
-print(max_time)
+# import pandas as pd
+# cd_file_this=r'E:\ProjectData\MembraneProject\AllRawData\200710hmr1plc1p3\aceNuc\CD200710hmr1plc1p3.csv'
+# df_cd_file=pd.read_csv(cd_file_this)
+# max_time=max(df_cd_file['time'])
+# print(max_time)
+#
+# max_cells=0
+# the_most_cell_tp=0
+# for time_tem in range(max_time-50,max_time):
+#     this_cell_num=len(df_cd_file[df_cd_file['time']==time_tem])
+#     print(time_tem,this_cell_num)
+#     if this_cell_num>max_cells:
+#         max_cells=this_cell_num
+#         the_most_cell_tp=time_tem
+# print(the_most_cell_tp,max_cells)
+# ================================================================================================
 
-max_cells=0
-the_most_cell_tp=0
-for time_tem in range(max_time-50,max_time):
-    this_cell_num=len(df_cd_file[df_cd_file['time']==time_tem])
-    print(time_tem,this_cell_num)
-    if this_cell_num>max_cells:
-        max_cells=this_cell_num
-        the_most_cell_tp=time_tem
-print(the_most_cell_tp,max_cells)
+# =================================================================================================
+from utils.data_io import nib_load
+
+# niigz_filepath=r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\Documents\06paper TUNETr TMI LSA NC\TUNETr dataset\CTransformer embryos segmentation'
+# embryo_names=['200710hmr1plc1p1','200710hmr1plc1p2','200710hmr1plc1p3']
+#
+# sum_this_set=0
+#
+# for embryo_name in embryo_names:
+#     files_list=glob.glob(os.path.join(niigz_filepath,embryo_name,'SegCell','*.nii.gz'))
+#     for embryonic_file in files_list:
+#         volume_this=nib_load(embryonic_file)
+#         sum_this_set=sum_this_set+len(np.unique(volume_this))-1
+
+
+niigz_filepath=r'C:\Users\zelinli6\OneDrive - City University of Hong Kong - Student\Documents\06paper TUNETr TMI LSA NC\TUNETr dataset\TrainingandEvaluation\training\SegCell'
+
+sum_this_set=0
+
+files_list=glob.glob(os.path.join(niigz_filepath,'*.nii.gz'))
+for embryonic_file in files_list:
+    volume_this=nib_load(embryonic_file)
+    sum_this_set=sum_this_set+len(np.unique(volume_this))-1
+
+print(sum_this_set)
+
+
 # ================================================================================================
