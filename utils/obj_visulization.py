@@ -33,10 +33,11 @@ def rename_objs(embryo_names, tps, max_middle_num, root, tiff_map_txt_path,file_
                 # =============rename  obj ===================
                 obj_file_path = os.path.join(root, embryo_name,
                                              embryo_name + '_' + str(tp).zfill(3) + file_suffix+'_' + str(
-                                                 middle_idx) + '.obj')
+                                                 middle_idx).zfill(3) + '.obj')
+                # print(obj_file_path)
                 if os.path.exists(obj_file_path):
                     print('dealing with ' + embryo_name,
-                          embryo_name + '_' + str(tp).zfill(3) + file_suffix+'_' + str(middle_idx) + '.obj')
+                          embryo_name + '_' + str(tp).zfill(3) + file_suffix+'_' + str(middle_idx).zfill(3) + '.obj')
                     with open(obj_file_path) as f:
                         lines = f.readlines()
                     with open(obj_file_path, 'w') as f:
@@ -61,13 +62,14 @@ def rename_objs(embryo_names, tps, max_middle_num, root, tiff_map_txt_path,file_
                                 rename_order_list_for_mtl[indexes_for_mtl - 1]
                             else:
                                 f.write(line)
+
                 # =============rename  mtl ===================
                 mtl_file_path = os.path.join(root, embryo_name,
                                              embryo_name + '_' + str(tp).zfill(3) + file_suffix+'_' + str(
-                                                 middle_idx) + '.mtl')
+                                                 middle_idx).zfill(3) + '.mtl')
                 if os.path.exists(mtl_file_path):
                     print('dealing with ' + embryo_name,
-                          embryo_name + '_' + str(tp).zfill(3) + file_suffix+'_' + str(middle_idx) + '.mtl')
+                          embryo_name + '_' + str(tp).zfill(3) + file_suffix+'_' + str(middle_idx).zfill(3) + '.mtl')
 
                     mtl_index_tmp = 0
                     with open(mtl_file_path) as f:
@@ -89,7 +91,7 @@ def combine_objs(embryo_names, tps, max_middle_num, root, target_root,file_suffi
     for idx, embryo_name in enumerate(embryo_names):
         for tp in range(1, tps[idx] + 1):
             obj_file_path_tmp = os.path.join(root, embryo_name,
-                                         embryo_name + '_' + str(tp).zfill(3) + file_suffix+'_1.obj')
+                                         embryo_name + '_' + str(tp).zfill(3) + file_suffix+'_001.obj')
             if not os.path.exists(obj_file_path_tmp):
                 continue
 
@@ -109,7 +111,7 @@ def combine_objs(embryo_names, tps, max_middle_num, root, target_root,file_suffi
                 for middle_idx in range(0, max_middle_num + 1):
                     obj_file_path = os.path.join(root, embryo_name,
                                                  embryo_name + '_' + str(tp).zfill(3) + file_suffix+'_' + str(
-                                                     middle_idx) + '.obj')
+                                                     middle_idx).zfill(3) + '.obj')
                     if os.path.exists(obj_file_path):
                         with open(obj_file_path) as infile:
                             lines = infile.readlines()
@@ -132,7 +134,7 @@ def combine_objs(embryo_names, tps, max_middle_num, root, target_root,file_suffi
                 for middle_idx in range(0, max_middle_num + 1):
                     mtl_file_path = os.path.join(root, embryo_name,
                                                  embryo_name + '_' + str(tp).zfill(3) + file_suffix+'_' + str(
-                                                     middle_idx) + '.mtl')
+                                                     middle_idx).zfill(3) + '.mtl')
                     if os.path.exists(mtl_file_path):
                         with open(mtl_file_path) as infile:
                             lines = infile.readlines()

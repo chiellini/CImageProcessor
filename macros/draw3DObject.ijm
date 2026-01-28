@@ -7,7 +7,7 @@ root_obj_output_path="F:/temp/tif/obj_to_merge"
 
 //embryonames_list = newArray("compress1","Compressed2","Uncompressed1","Uncompressed2");
 
-embryonames_list = newArray("Sample05","Sample06","Sample07","Sample08","Sample09","Sample10","Sample11","Sample12","Sample13","Sample14","Sample15","Sample16","Sample17","Sample18","Sample19","Sample20");
+embryonames_list = newArray("Sample08","Sample09","Sample10","Sample11","Sample12","Sample13","Sample14","Sample15","Sample16","Sample17","Sample18","Sample19","Sample20");
 
 
 for (idx =0;idx<embryonames_list.length;idx++){
