@@ -38,7 +38,8 @@ def _palette_rgb(label):
 
 
 def niigz_to_obj(niigz_path, obj_out_path, name_dictionary_path=None,
-                 resize_scale=0.5, smooth_sigma=1.0, step_size=1, pad=2):
+                 resize_scale=0.5, smooth_sigma=1.0, step_size=1, pad=2,
+                 match_imagej=True):
     """Convert one segmented .nii.gz into a single named, colored .obj (+ .mtl).
 
     :param resize_scale: nearest-neighbor rescale of the label volume before meshing.
@@ -47,8 +48,18 @@ def niigz_to_obj(niigz_path, obj_out_path, name_dictionary_path=None,
         cubes, replicating ImageJ "Show Color Surfaces ... radius=1". 0 disables it.
     :param step_size: marching_cubes step; >1 yields a coarser/lighter mesh.
     :param pad: voxels of padding around each cell's bounding box so the surface closes.
+    :param match_imagej: emit vertices in the same coordinate frame as the old ImageJ
+        pipeline. save_indexed_tif slices along axis2 and writes each page as
+        Image.fromarray(data[...,z]), so the tif has rows=axis0, cols=axis1, slice=axis2;
+        ImageJ then meshes with X=col=axis1, Y=row=axis0, Z=slice=axis2. Swapping
+        axis0<->axis1 up front reproduces that exact vertex frame (verified against the
+        original objs: centroid offset 0.1 vox, ~1 vox surface distance), keeping
+        normals/winding self-consistent. Set False to keep raw niigz (axis0,axis1,axis2).
     """
     seg = np.rint(nib.load(niigz_path).get_fdata()).astype(np.int32)
+
+    if match_imagej:
+        seg = np.swapaxes(seg, 0, 1)
 
     if resize_scale != 1.0:
         # labels must never be blurred -> nearest neighbour (order=0)
@@ -153,19 +164,19 @@ if __name__ == "__main__":
     # ---- single file ----
     niigz_to_obj(
         niigz_path=r'F:\My Drive\CMapSubmission\Dataset Access\Dataset C\WT_Sample4\SegCell\WT_Sample4_140_segCell.nii.gz',
-        obj_out_path=r'C:\Users\User\Desktop',
+        obj_out_path=r'C:\Users\User\Desktop\WT_Sample4_140_segCell.obj',
         name_dictionary_path=r'F:\My Drive\CMapSubmission\Dataset Access\Dataset C\name_dictionary.csv',
     )
 
     # ---- batch (replaces the whole 3-step pipeline) ----
     # skip_existing=True (default) makes this resumable: re-running skips finished .obj.
-    root = r'C:\Users\User\OneDrive - innocimda\CMapSubmission\Dataset Access\Dataset C'
-    batch_niigz_to_obj(
-        embryo_names=['MT_lag-1_Sample1', 'MT_lag-1_Sample2', 'MT_pop-1_Sample1', 'MT_pop-1_Sample2'],
-        root=root,
-        target_root=r'C:\Users\User\OneDrive - innocimda\CMapSubmission\4 mutant output',
-        name_dictionary_path=os.path.join(root, 'name_dictionary.csv'),
-        seg_subfolder='SegCell',
-        resize_scale=0.5,   # match old pipeline; set 1.0 for full resolution
-        smooth_sigma=1.0,
-    )
+    # root = r'C:\Users\User\OneDrive - innocimda\CMapSubmission\Dataset Access\Dataset C'
+    # batch_niigz_to_obj(
+    #     embryo_names=['MT_lag-1_Sample1', 'MT_lag-1_Sample2', 'MT_pop-1_Sample1', 'MT_pop-1_Sample2'],
+    #     root=root,
+    #     target_root=r'C:\Users\User\OneDrive - innocimda\CMapSubmission\4 mutant output',
+    #     name_dictionary_path=os.path.join(root, 'name_dictionary.csv'),
+    #     seg_subfolder='SegCell',
+    #     resize_scale=0.5,   # match old pipeline; set 1.0 for full resolution
+    #     smooth_sigma=1.0,
+    # )
